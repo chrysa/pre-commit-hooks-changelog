@@ -2,5 +2,4 @@
     name: generate changlog from folder
     entry: pre-commit-generate-changelog
     language: system
-    files: changelog/.*\.yaml$
     types: [yaml]

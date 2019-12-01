@@ -1,30 +1,36 @@
 from dataclasses import dataclass
 from dataclasses import field
+from typing import Dict
 from typing import List
+from typing import TypeVar
+from typing import Union
+
+helper_T: object = TypeVar("Helper")
 
 
 @dataclass
 class Helper:
     changelog_entry_available: List = field(default_factory=lambda: [])
     level: int = 1
-    content: str = ''
+    content: str = ""
 
-    def title(self, value, ret=False):
-        return self.add_header(value=value, ret=ret)
+    def title(self, value: str, ret: bool = False) -> str:
+        data = self.add_header(value=value, ret=ret)
         self.level += 1
+        return data
 
-    def add_header(self, value, ret = False):
+    def add_header(self, value: str, ret: bool = False) -> Union[str, None]:
         data = f"{'#' * self.level} {value}\n"
         if ret:
             return data
         else:
-           self.content += data
+            self.content += data
 
-    def add_line(self, value):
+    def add_line(self, value: str):
         self.content += f"{value} \n"
 
-    def add_unordred_list(self, value, ret = False):
-        content = ''
+    def add_unordred_list(self, value: str, ret: bool = False) -> Union[str, None]:
+        content = ""
         for item in value:
             if isinstance(item, str):
                 content += f"* {item} \n"
@@ -35,7 +41,7 @@ class Helper:
         else:
             self.content += content
 
-    def gen_content(self, content):
+    def gen_content(self, content: Dict) -> str:
         if isinstance(content, str):
             if content in self.changelog_entry_available:
                 self.add_header(value=content)
@@ -57,9 +63,9 @@ class Helper:
             raise Exception(f"type {type(content)} is not supported")
         return self.content
 
-    def internal_link(self, target, display):
+    def internal_link(self, target: str, display: str) -> str:
         return f"[{display}]({target})"
 
-    def reset(self):
+    def reset(self) -> None:
         self.level = 1
-        self.content = ''
+        self.content = ""

@@ -34,4 +34,9 @@ repos:
                 language: docker_image
                 types:
                     - dockerfile
-                entry: --entrypoint
+                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore SC2001 --ignore SC2086 --ignore DL4006 -
+            -   id: generate-changelog
+                name: generate changlog from folder
+                entry: pre-commit-generate-changelog
+                language: system
+                types: [yaml]
