@@ -1,5 +1,6 @@
 -   id: generate-changelog
     name: generate changlog from folder
-    entry: generate_changelog.py
-    language: python
-    files: 'changelog/.*(?<!\.yaml)$'
+    entry: pre-commit-generate-changelog
+    language: system
+    files: changelog/.*\.yaml$
+    types: [yaml]
