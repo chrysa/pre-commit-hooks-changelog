@@ -14,15 +14,3 @@ Add this to your `.pre-commit-config.yaml`
         hooks:
         -   id: generate-changelog
             files: 'changelog/.*(?<!\.yaml|.yml)$'
-
-
-### Options
-
-- `--rebuild` - rebuild changelog from scratch
-
-### As a standalone package (SOON)
-
-If you'd like to use these hooks, they're also available as a standalone
-package.
-
-Simply `pip install pre-commit-hooks-changelog`
