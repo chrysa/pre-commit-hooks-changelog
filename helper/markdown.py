@@ -27,13 +27,13 @@ class Helper:
             self.content += data
 
     def add_line(self, value: str):
-        self.content += f"{value} \n"
+        self.content += f"{value}\n"
 
     def add_unordred_list(self, value: str, ret: bool = False) -> Union[str, None]:
         content = ""
         for item in value:
             if isinstance(item, str):
-                content += f"* {item} \n"
+                content += f"* {item}\n"
             else:
                 raise Exception(f"type {type(item)} is not supported")
         if ret:
