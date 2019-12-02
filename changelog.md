@@ -1,8 +1,7 @@
-# v0.1.1
-## added
-* rebuild option 
-* some typing on code 
-## modified
-* generation don't rebuild old version if unchange 
+# v0.1.2
+## fix
+* file compare error
+* push changelog folder
 # History
-* [v0.1.0](changelog/archives/v0.1.0.md) 
+* [v0.1.0](changelog/archives/v0.1.0.md)
+* [v0.1.1](changelog/archives/v0.1.1.md)

@@ -8,11 +8,12 @@ from formater import Formatter
 
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
+    "blocked",
+    "fix",
     "modified",
     "removed",
     "upgraded",
     "unreleased",
-    "blocked",
     "todo",
 ]
 
