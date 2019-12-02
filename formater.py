@@ -9,8 +9,6 @@ from typing import Union
 from helper.markdown import Helper
 from helper.markdown import helper_T
 
-from pprint import pprint
-
 
 @dataclass
 class Formatter:
@@ -82,9 +80,6 @@ class Formatter:
         skip = False
         if changelog_path.exists():
             with open(changelog_path, "r", encoding="UTF-8") as file:
-                pprint(self.content)
-                pprint(file.read())
-                pprint(self.content == file.read())
                 if self.content == file.read():
                     skip = True
                 else:
@@ -98,7 +93,6 @@ class Formatter:
         if not archives_path.exists():
             if not archives_path.is_dir():
                 archives_path.mkdir(exist_ok=True)
-        pprint(self.compare_content(changelog_path=changelog_path))
         if not self.compare_content(changelog_path=changelog_path):
             with open(changelog_path, "w+", encoding="UTF-8") as file:
                 file.write(self.content)
