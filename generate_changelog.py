@@ -3,8 +3,9 @@ import sys
 from typing import Optional
 from typing import Sequence
 
-from changelog import Changelog
 from formater import Formatter
+
+from changelog import Changelog
 
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
@@ -12,9 +13,9 @@ CHANGELOG_ENTRY_AVAILABLE = [
     "fix",
     "modified",
     "removed",
+    "todo",
     "upgraded",
     "unreleased",
-    "todo",
 ]
 
 
