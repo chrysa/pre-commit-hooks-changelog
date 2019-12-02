@@ -2,6 +2,25 @@ default_language_version:
     python: python3.7
 minimum_pre_commit_version: 1.20.0
 repos:
+    -   repo: local
+        hooks:
+            -   id: clean_python
+                name: clean python cache and compiled
+                entry: pyclean .
+                language: system
+            -   id: hadolint
+                name: Valid Dockerfile
+                description: Valid Dockerfile
+                language: docker_image
+                types:
+                    - dockerfile
+                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore SC2001 --ignore SC2086 --ignore DL4006 -
+            -   id: generate-changelog
+                name: generate changlog from folder
+                entry: pre-commit-generate-changelog
+                language: system
+                types: [yaml]
+
     -   repo: https://github.com/pre-commit/pre-commit-hooks
         rev: v2.4.0
         hooks:
@@ -22,21 +41,3 @@ repos:
         hooks:
             -   id: black
                 language_version: python3.7
-    -   repo: local
-        hooks:
-            -   id: clean_python
-                name: clean python cache and compiled
-                entry: pyclean .
-                language: system
-            -   id: hadolint
-                name: Valid Dockerfile
-                description: Valid Dockerfile
-                language: docker_image
-                types:
-                    - dockerfile
-                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore SC2001 --ignore SC2086 --ignore DL4006 -
-            -   id: generate-changelog
-                name: generate changlog from folder
-                entry: pre-commit-generate-changelog
-                language: system
-                types: [yaml]
