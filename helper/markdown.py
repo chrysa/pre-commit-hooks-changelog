@@ -1,16 +1,10 @@
-from dataclasses import dataclass
-from dataclasses import field
-from typing import Dict
-from typing import List
-from typing import TypeVar
-from typing import Union
-
-helper_T: object = TypeVar("Helper")
+from typing import Dict, List, Optional
+from dataclasses import field, dataclass
 
 
 @dataclass
 class Helper:
-    changelog_entry_available: List = field(default_factory=lambda: [])
+    changelog_entry_available: List[str] = field(default_factory=list)
     level: int = 1
     content: str = ""
 
@@ -19,17 +13,17 @@ class Helper:
         self.level += 1
         return data
 
-    def add_header(self, value: str, ret: bool = False) -> Union[str, None]:
+    def add_header(self, value: str, ret: bool = False) -> Optional[str]:
         data = f"{'#' * self.level} {value}\n"
         if ret:
             return data
         else:
             self.content += data
 
-    def add_line(self, value: str):
+    def add_line(self, value: str) -> None:
         self.content += f"{value}\n"
 
-    def add_unordred_list(self, value: str, ret: bool = False) -> Union[str, None]:
+    def add_unordred_list(self, value: List, ret: bool = False) -> Optional[str]:
         content = ""
         for item in value:
             if isinstance(item, str):

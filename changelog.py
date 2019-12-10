@@ -1,10 +1,8 @@
-import argparse
 import pathlib
-from dataclasses import dataclass
-from dataclasses import field
+import argparse
+from typing import Dict, List
 from pathlib import Path
-from typing import Dict
-from typing import List
+from dataclasses import field, dataclass
 
 import ruamel.yaml
 
@@ -14,10 +12,10 @@ yaml = ruamel.yaml.YAML(typ="safe")
 @dataclass(init=True)
 class Changelog:
     args: argparse.Namespace
-    chang: Dict[str, Dict] = field(default_factory=lambda: {})
-    changelog_content: Dict[str, Dict] = field(default_factory=lambda: {})
+    chang: Dict[str, Dict] = field(default_factory=dict)
+    changelog_content: Dict[str, Dict] = field(default_factory=dict)
     project_path: pathlib.PosixPath = Path().absolute()
-    changelog_entry_available: List[str] = field(default_factory=lambda: [])
+    changelog_entry_available: List[str] = field(default_factory=list)
 
     @property
     def changelog_folder_path(self) -> pathlib.PosixPath:

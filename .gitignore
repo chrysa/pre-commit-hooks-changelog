@@ -104,3 +104,6 @@ venv.bak/
 .mypy_cache/
 /pre_commit_hooks_changelog.egg-info/
 .flake8.log
+
+
+.idea/
