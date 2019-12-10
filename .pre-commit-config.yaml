@@ -2,6 +2,10 @@ default_language_version:
     python: python3.7
 minimum_pre_commit_version: 1.20.0
 repos:
+    -   repo: https://github.com/asottile/setup-cfg-fmt
+        rev: v1.6.0
+        hooks:
+            -   id: setup-cfg-fmt
     -   repo: local
         hooks:
             -   id: clean_python
@@ -14,12 +18,16 @@ repos:
                 language: docker_image
                 types:
                     - dockerfile
-                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore SC2001 --ignore SC2086 --ignore DL4006 -
+                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore DL4006 --ignore SC2001 --ignore SC2086 --ignore SC2102 -
             -   id: generate-changelog
                 name: generate changlog from folder
                 entry: pre-commit-generate-changelog
                 language: system
                 types: [yaml]
+    -   repo: https://github.com/igorshubovych/markdownlint-cli
+        rev: ''
+        hooks:
+            -   id: markdownlint
     -   repo: https://github.com/pre-commit/mirrors-isort
         rev: ''
         hooks:
@@ -29,10 +37,10 @@ repos:
         hooks:
         -   id: black
             language_version: python3.7
-#    -   repo: https://github.com/pre-commit/mirrors-mypy
-#        rev: 'v0.750'
-#        hooks:
-#        -   id: mypy
+    -   repo: https://github.com/pre-commit/mirrors-mypy
+        rev: 'v0.750'
+        hooks:
+        -   id: mypy
     -   repo: https://github.com/asottile/setup-cfg-fmt
         rev: v1.6.0
         hooks:

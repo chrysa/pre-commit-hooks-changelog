@@ -3,6 +3,7 @@ build:
 
 clean:
 	rm -rf build dist pre_commit_hooks_changelog.egg-info .mypy_cache
+
 deploy: clean install build pypi pypi-test
 	git push
 
