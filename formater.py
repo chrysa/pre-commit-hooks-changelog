@@ -28,19 +28,24 @@ class Formatter:
         latest_version = list(content_dict.keys())[-1]
         # generate all versions
         for version, content in content_dict.items():
-            self.content = self.helper.title(value=version, ret=True)
+            self.content = self.helper.title(
+                value=version.replace(".yaml", ""), ret=True
+            )
             self.content += self.helper.gen_content(content=content_dict[version])
             self.save(
                 changelog_path=archives_path / version, archives_path=archives_path,
             )
             self.helper.reset()
         # generate front page
-        self.content = self.helper.title(value=latest_version, ret=True)
+        self.content = self.helper.title(
+            value=latest_version.replace(".yaml", ""), ret=True
+        )
         self.content += self.helper.gen_content(content=content_dict[latest_version])
         if len(content_dict.keys()) > 1:
             self.content += self.helper.title(value="History", ret=True)
             self.content += self.generate_history(
-                archives_path=archives_path, latest_version=latest_version
+                archives_path=archives_path,
+                latest_version=latest_version.replace(".yaml", ""),
             )
         self.save(changelog_path=changelog_path, archives_path=archives_path)
 
@@ -56,6 +61,7 @@ class Formatter:
                         target=file.relative_to(Path.cwd()).as_posix(), display=version
                     )
                 )
+        links.reverse()
         return self.helper.add_unordred_list(value=links, ret=True)
 
     def remove(
@@ -84,28 +90,26 @@ class Formatter:
     def write_file(
         self, changelog_path: pathlib.PosixPath, success_status: str
     ) -> None:
-        changelog_path_str = changelog_path.as_posix()
-        with open(changelog_path_str, "w+", encoding="UTF-8") as file:
+        with open(changelog_path.as_posix(), "w+", encoding="UTF-8") as file:
             file.write(self.content)
         if changelog_path.exists():
-            print(f"{changelog_path_str} [{success_status}]")
+            print(f"{changelog_path.as_posix()} [{success_status}]")
         else:
-            print(f"{changelog_path_str} [\033[91mFAILED\33[37m]")
+            print(f"{changelog_path.as_posix()} [\033[91mFAILED\33[37m]")
 
     def save(
         self, changelog_path: pathlib.PosixPath, archives_path: pathlib.PosixPath
     ) -> None:
-        if not changelog_path.as_posix().endswith(".md"):
-            changelog_path.with_suffix(".md")
         if not archives_path.exists() and not archives_path.is_dir():
             archives_path.mkdir(exist_ok=True)
+        changelog_path = changelog_path.with_suffix(".md")
         if not changelog_path.exists():
             self.write_file(
-                changelog_path=changelog_path, success_status="\033[92mCREATED\33[37m"
+                changelog_path=changelog_path, success_status="\033[92mCREATED\33[37m",
             )
         elif not self.compare_content(changelog_path=changelog_path):
             self.write_file(
-                changelog_path=changelog_path, success_status="\33[33mUPDATED\33[37m"
+                changelog_path=changelog_path, success_status="\33[33mUPDATED\33[37m",
             )
         else:
             print(f"{changelog_path} [\33[34mSKIPPED\33[37m]")

@@ -36,7 +36,7 @@ class Changelog:
         for file in self.changelog_folder_path.glob("*.yaml"):
             self.chang = yaml.load(file)
             self.validate_file(file_name=file.name)
-            self.changelog_content[file.name.replace(".yaml", "")] = self.chang
+            self.changelog_content[file.name] = self.chang
 
     def validate_file(self, file_name) -> None:
         chang_keys = self.chang.keys()

@@ -1,14 +1,9 @@
-# v0.1.2
-## added
-* makefile
-* deploy on pypi
+# v0.1.3
 ## fixed
-* file compare error
-* push changelog folder
+* missing archives extensions
 ## modified
-* pre-commit flow
-## todo
-* rework all
+* history order list
 # History
-* [v0.1.0](changelog/archives/v0.1.0.md)
+* [v0.1.2](changelog/archives/v0.1.2.md)
 * [v0.1.1](changelog/archives/v0.1.1.md)
+* [v0.1.0](changelog/archives/v0.1.0.md)
