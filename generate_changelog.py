@@ -10,7 +10,7 @@ from changelog import Changelog
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
     "blocked",
-    "fix",
+    "fixed",
     "modified",
     "removed",
     "todo",
