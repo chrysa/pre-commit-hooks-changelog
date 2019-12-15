@@ -24,10 +24,10 @@ repos:
                 entry: pre-commit-generate-changelog
                 language: system
                 types: [yaml]
-    -   repo: https://github.com/igorshubovych/markdownlint-cli
-        rev: ''
-        hooks:
-            -   id: markdownlint
+            -   repo: https://github.com/igorshubovych/markdownlint-cli
+                rev: ''
+                hooks:
+                    -   id: markdownlint
     -   repo: https://github.com/pre-commit/mirrors-isort
         rev: ''
         hooks:

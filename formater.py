@@ -200,6 +200,7 @@ class Formatter:
         elif not self.compare_content(changelog_path=changelog_path):
             self.write_file(
                 changelog_path=changelog_path, status="\33[33mUPDATED\33[37m",
+
             )
         else:
             print(f"{changelog_path} [\33[34mSKIPPED\33[37m]")

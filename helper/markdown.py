@@ -1,7 +1,6 @@
 from typing import Dict, List, Union, Optional
 from dataclasses import field, dataclass
 
-
 @dataclass(init=True)
 class Helper:
     changelog_entry_available: List[str] = field(default_factory=list)
