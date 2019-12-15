@@ -1,10 +1,8 @@
-import argparse
 import sys
-from typing import Optional
-from typing import Sequence
+import argparse
+from typing import Optional, Sequence
 
 from formater import Formatter
-
 from changelog import Changelog
 
 CHANGELOG_ENTRY_AVAILABLE = [
@@ -18,6 +16,8 @@ CHANGELOG_ENTRY_AVAILABLE = [
     "unreleased",
 ]
 
+AVAILABLE_REBUILD_OPTION = ["all", "versions", "latest", "home"]
+
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
@@ -30,16 +30,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="define changelog outpout",
     )
     parser.add_argument(
-        "--changelog_folder",
+        "--changelog-folder",
         type=str,
         default="changelog",
         dest="changelog_folder",
         help="source folder of changelogs",
     )
     parser.add_argument(
-        "--rebuild", action="store_true", help="rebuild changelog from scratch"
+        "--rebuild", type=str, dest="rebuild", default=None, help="rebuild changelog",
     )
     args = parser.parse_args(argv)
+    if args.rebuild:
+        if args.rebuild not in AVAILABLE_REBUILD_OPTION:
+            print(f"{args.rebuild} is not a valid option for rebuild")
+            sys.exit()
     process = Changelog(args=args, changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)
     process.collect()
     formatter = Formatter(changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)
@@ -49,6 +53,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         content_dict=process.changelog_content,
         rebuild=args.rebuild,
     )
+    return 0
 
 
 if __name__ == "__main__":

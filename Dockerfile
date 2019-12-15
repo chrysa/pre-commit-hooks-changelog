@@ -5,7 +5,6 @@ COPY . /src
 WORKDIR /src
 
 RUN set -x \
- && pip install -q -r requirements-dev.txt \
- && pip install -e .
+ && pip install -e .[pre_commit,push,tests]
 
 VOLUME ["/src"]
