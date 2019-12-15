@@ -3,6 +3,7 @@ added:
     - deploy on pypi
 
 fixed:
+    - auto skipped files
     - file compare error
     - push changelog folder
 

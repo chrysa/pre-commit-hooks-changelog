@@ -1,0 +1,15 @@
+added:
+    - markdown linter in pre-commit cycle
+    - parameter in rebuild arg
+    - publish on pypi/pypi test with github workflow
+
+fixed:
+    - markdown linting
+    - mypy error
+
+upgraded:
+    - setup.cfg
+
+todo:
+    - refacto
+    - add unit tests
