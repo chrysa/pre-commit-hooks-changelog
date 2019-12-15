@@ -61,6 +61,8 @@ repos:
             -   id: name-tests-test
             -   id: trailing-whitespace
             -   id: flake8
+            -   id: check-yaml
+                files: .(yaml|yml)$
     -   repo: https://github.com/psf/black
         rev: stable
         hooks:

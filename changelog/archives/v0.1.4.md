@@ -4,6 +4,7 @@
 
 * markdown linter in pre-commit cycle
 * parameter in rebuild arg
+* publish on pypi/pypi test with github workflow
 
 ## Fixed
 

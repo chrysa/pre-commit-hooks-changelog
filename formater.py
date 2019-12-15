@@ -168,6 +168,7 @@ class Formatter:
     def compare_content(self, changelog_path: pathlib.Path) -> bool:
         skip = False
         if changelog_path.exists():
+            self.remove_trailling_line()
             with open(changelog_path.as_posix(), "r", encoding="UTF-8") as file:
                 if self.content == file.read():
                     skip = True
@@ -180,7 +181,6 @@ class Formatter:
         self.content += "\n" * keep
 
     def write_file(self, changelog_path: pathlib.Path, status: str) -> None:
-        self.remove_trailling_line()
         self.content += "\n"
         with open(changelog_path.as_posix(), "w+", encoding="UTF-8") as file:
             file.write(self.content)
