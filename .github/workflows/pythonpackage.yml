@@ -8,7 +8,7 @@ jobs:
         strategy:
             max-parallel: 4
             matrix:
-                python-version: [3.7]
+                python-version: [3.8]
 
         steps:
             -   uses: actions/checkout@v1
@@ -20,10 +20,21 @@ jobs:
                 run: |
                     python -m pip install --upgrade pip
                     pip install -r -e .
-            #    - name: Test with pytest
-            #      run: |
-            #        pip install tox
-            #        tox
+    tests:
+        runs-on: ubuntu-latest
+        strategy:
+            max-parallel: 4
+            matrix:
+                python-version: [3.8]
+        steps:
+            -   uses: actions/checkout@v1
+            -   name: Set up Python ${{ matrix.python-version }}
+                uses: actions/setup-python@v1
+                with:
+                    python-version: ${{ matrix.python-version }}
+            -   name: run unit tests
+                run: |
+                    pytest
     deploy-stable:
         on:
             pull_request:
@@ -33,7 +44,7 @@ jobs:
             strategy:
                 max-parallel: 4
                 matrix:
-                    python-version: [3.7]
+                    python-version: [3.8]
             steps:
                 -   uses: actions/checkout@v1
                 -   name: Set up Python
@@ -60,7 +71,7 @@ jobs:
             strategy:
                 max-parallel: 4
                 matrix:
-                    python-version: [3.7]
+                    python-version: [3.8]
             steps:
                 -   uses: actions/checkout@v1
                 -   name: Set up Python
@@ -78,3 +89,34 @@ jobs:
                     run: |
                         python setup.py sdist bdist_wheel
                         twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+    release_sphinx:
+        needs: [build]
+        runs-on: ubuntu-latest
+        container:
+            image: python:3.6
+            volumes:
+                - dist:dist
+                - public:public
+        steps:
+            # check out sources that will be used for autodocs, plus readme
+            - uses: actions/checkout@v1
+            # download wheel that was build and uploaded in the build step
+            - uses: actions/download-artifact@v1
+              with:
+                name: distributions
+                path: dist
+            # didn't need to change anything here, but had to add sphinx.ext.githubpages
+            # to my conf.py extensions list. that fixes the broken uploads
+            - name: Building documentation
+              run: |
+                pip install .[docucentation]
+                sphinx-apidoc --no-toc --module-first -o docs/autodoc pre_commit_hook
+                sphinx-build docs public -b dirhtml
+            # still need to build and set the PAT to get a rebuild on the pages job,
+            # apart from that quite clean and nice
+            - name: github pages deploy
+              uses: peaceiris/actions-gh-pages@v2.3.1
+              env:
+                PERSONAL_TOKEN: ${{ secrets.PAT }}
+                PUBLISH_BRANCH: gh-pages
+                PUBLISH_DIR: public

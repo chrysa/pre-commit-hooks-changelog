@@ -1,0 +1,8 @@
+added:
+    item1:
+        - add entry 1
+        - add entry 2
+
+invalid:
+    - upgrad entry 1
+    - upgrad entry 2

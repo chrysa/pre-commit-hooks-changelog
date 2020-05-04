@@ -1,5 +1,7 @@
 -   id: generate-changelog
     name: generate changlog from folder
-    entry: pre-commit-generate-changelog
+    entry: generate-changelog
     language: system
+    files: ^(changelog|changelogs)/.*\.(yml|yaml)$
     types: [yaml]
+    stages: [commit, push, manual]

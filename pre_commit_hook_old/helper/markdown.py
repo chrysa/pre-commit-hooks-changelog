@@ -1,6 +1,7 @@
 from typing import Dict, List, Union, Optional
 from dataclasses import field, dataclass
 
+
 @dataclass(init=True)
 class Helper:
     changelog_entry_available: List[str] = field(default_factory=list)
@@ -11,9 +12,7 @@ class Helper:
         self.level += 1
         return f"# {value.title()}\n\n"
 
-    def add_header(
-        self, value: str, level: int = None, empty_lines: int = 2
-    ) -> Optional[str]:
+    def add_header(self, value: str, level: int = None, empty_lines: int = 2) -> Optional[str]:
         if level is not None:
             self.level = level
         content = f"{'#' * self.level} {value.title()}"
@@ -28,7 +27,8 @@ class Helper:
     def add_line(self, value: str) -> None:
         self.content += f"{value}\n"
 
-    def add_unordred_list(self, value: List[str]) -> str:
+    @staticmethod
+    def add_unordred_list(value: List[str]) -> str:
         content = "\n"
         for item in value:
             if isinstance(item, str):
@@ -38,10 +38,7 @@ class Helper:
         return content
 
     def gen_content(
-        self,
-        content: Union[
-            str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]
-        ],
+        self, content: Union[str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]],
     ) -> str:
         if isinstance(content, str):
             if content in self.changelog_entry_available:
@@ -66,7 +63,8 @@ class Helper:
         self.content += "\n"
         return self.content
 
-    def internal_link(self, target: str, display: str) -> str:
+    @staticmethod
+    def internal_link(target: str, display: str) -> str:
         return f"[{display}]({target})"
 
     def reset(self) -> None:

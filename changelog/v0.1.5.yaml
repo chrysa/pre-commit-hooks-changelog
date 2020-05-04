@@ -1,0 +1,6 @@
+fixed:
+    - compare file content for skipped
+
+todo:
+    - refacto
+    - add unit tests

@@ -1,0 +1,66 @@
+version: '3.7'
+
+
+x-app: &default-app
+    build: &default-app-build
+        context: .
+        dockerfile: Dockerfile
+        cache_from:
+            - &default-app-python-cache python:3.8-alpine
+    command: bash
+    volumes:
+        - &default-app-volume-app /pre_commit_hook:/src/pre_commit_hook
+    working_dir: /src
+
+
+services:
+    documentation:
+        <<: *default-app
+        image: generate_changelog_documentation:1.0.0
+        build:
+            <<: *default-app-build
+            target: documentation
+            cache_from:
+                - *default-app-python-cache
+                - generate_changelog_documentation:1.0.0
+        container_name: documentation_generate_changelog
+        volumes:
+            - *default-app-volume-app
+            - ./docs:/src/docs
+    generate_changelog:
+        <<: *default-app
+        image: generate_changelog:0.2.0
+        build:
+            <<: *default-app-build
+            cache_from:
+                - *default-app-python-cache
+                - generate_changelog:0.2.0
+            target: application
+        container_name: generate_changelog
+        volumes:
+            - *default-app-volume-app
+            - ./changelog:/src/changelog
+    pytest:
+        <<: *default-app
+        image: generate_changelog_pytest:1.0.0
+        build:
+            <<: *default-app-build
+            cache_from:
+                - *default-app-python-cache
+                - generate_changelog_pytest:1.0.0
+            target: pytest
+        container_name: pytest_generate_changelog
+        volumes:
+            - *default-app-volume-app
+            - ./tests:/src/tests
+    quality:
+        <<: *default-app
+        image: generate_changelog_quality:1.0.0
+        build:
+            <<: *default-app-build
+            cache_from:
+                - *default-app-python-cache
+                - generate_changelog_quality:1.0.0
+            target: pytest
+        container_name: quality_generate_changelog
+        working_dir: /src

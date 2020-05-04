@@ -2,13 +2,14 @@ import sys
 import argparse
 from typing import Optional, Sequence
 
-from formater import Formatter
-from changelog import Changelog
+from pre_commit_hook_old.formater import Formatter
+from pre_commit_hook_old.changelog import Changelog
 
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
     "blocked",
     "fixed",
+    "in progress",
     "modified",
     "removed",
     "todo",
@@ -23,11 +24,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
     parser.add_argument(
-        "--output-file",
-        type=str,
-        default="changelog.md",
-        dest="output_file",
-        help="define changelog outpout",
+        "--output-file", type=str, default="changelog.md", dest="output_file", help="define changelog outpout",
     )
     parser.add_argument(
         "--changelog-folder",
@@ -40,10 +37,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--rebuild", type=str, dest="rebuild", default=None, help="rebuild changelog",
     )
     args = parser.parse_args(argv)
-    if args.rebuild:
-        if args.rebuild not in AVAILABLE_REBUILD_OPTION:
-            print(f"{args.rebuild} is not a valid option for rebuild")
-            sys.exit()
+    if args.rebuild and args.rebuild not in AVAILABLE_REBUILD_OPTION:
+        print(f"{args.rebuild} is not a valid option for rebuild")
+        sys.exit()
     process = Changelog(args=args, changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)
     process.collect()
     formatter = Formatter(changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)

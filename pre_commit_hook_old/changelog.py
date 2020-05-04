@@ -11,7 +11,7 @@ yaml = ruamel.yaml.YAML(typ="safe")
 
 @dataclass(init=True)
 class Changelog:
-    args: argparse.Namespace
+    args: argparse.valuespace
     chang: Dict[str, List[str]] = field(default_factory=dict)
     changelog_content: Dict[str, Dict[str, List[str]]] = field(default_factory=dict)
     project_path: pathlib.Path = Path().absolute()
@@ -35,14 +35,12 @@ class Changelog:
     def collect(self) -> None:
         for file in self.changelog_folder_path.glob("*.yaml"):
             self.chang = yaml.load(file)
-            self.validate_file(file_name=file.name)
-            self.changelog_content[file.name] = self.chang
+            self.validate_file(file_name=file.value)
+            self.changelog_content[file.value] = self.chang
 
     def validate_file(self, file_name: str) -> None:
         chang_keys = self.chang.keys()
-        if not set([x.lower() for x in chang_keys]).issubset(
-            self.changelog_entry_available
-        ):
+        if not {x.lower() for x in chang_keys}.issubset(self.changelog_entry_available):
             for key in chang_keys:
                 if key not in self.changelog_entry_available:
                     raise Exception(
