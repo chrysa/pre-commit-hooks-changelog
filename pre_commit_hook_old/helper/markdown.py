@@ -38,7 +38,8 @@ class Helper:
         return content
 
     def gen_content(
-        self, content: Union[str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]],
+        self,
+        content: Union[str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]],
     ) -> str:
         if isinstance(content, str):
             if content in self.changelog_entry_available:

@@ -28,7 +28,9 @@ class Formatter:
             self.remove_archives(archives_path=archives_path)
             self.generate_versions(content_dict=content_dict, archives_path=archives_path)
             self.generate_home_changelog(
-                content_dict=content_dict, changelog_path=changelog_path, archives_path=archives_path,
+                content_dict=content_dict,
+                changelog_path=changelog_path,
+                archives_path=archives_path,
             )
         elif rebuild == "versions":
             self.remove_archives(archives_path=archives_path)
@@ -38,27 +40,43 @@ class Formatter:
             self.generate_latest(content_dict=content_dict, archives_path=archives_path)
             self.remove_home_changelog(changelog_path=changelog_path)
             self.generate_home_changelog(
-                content_dict=content_dict, changelog_path=changelog_path, archives_path=archives_path,
+                content_dict=content_dict,
+                changelog_path=changelog_path,
+                archives_path=archives_path,
             )
         elif rebuild == "home":
             self.remove_home_changelog(changelog_path=changelog_path)
             self.generate_home_changelog(
-                content_dict=content_dict, changelog_path=changelog_path, archives_path=archives_path,
+                content_dict=content_dict,
+                changelog_path=changelog_path,
+                archives_path=archives_path,
             )
         else:
             self.generate_versions(content_dict=content_dict, archives_path=archives_path)
             self.generate_home_changelog(
-                content_dict=content_dict, changelog_path=changelog_path, archives_path=archives_path,
+                content_dict=content_dict,
+                changelog_path=changelog_path,
+                archives_path=archives_path,
             )
 
-    def remove_latest(self, archives_path: pathlib.Path, content_dict: Dict[str, Dict[str, List[str]]],) -> None:
+    def remove_latest(
+        self,
+        archives_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
         latest_version = list(content_dict.keys())[-1]
         self.remove_version(archives_path=archives_path, version=latest_version)
 
-    def generate_latest(self, archives_path: pathlib.Path, content_dict: Dict[str, Dict[str, List[str]]],) -> None:
+    def generate_latest(
+        self,
+        archives_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
         latest_version = list(content_dict.keys())[-1]
         self.generate_version(
-            archives_path=archives_path, content_dict=content_dict, version=latest_version,
+            archives_path=archives_path,
+            content_dict=content_dict,
+            version=latest_version,
         )
 
     def generate_version(
@@ -70,7 +88,8 @@ class Formatter:
         self.content = self.helper.title(value=version.replace(".yaml", ""))
         self.content += self.helper.gen_content(content=content_dict)
         self.save(
-            changelog_path=archives_path / version, archives_path=archives_path,
+            changelog_path=archives_path / version,
+            archives_path=archives_path,
         )
 
     @staticmethod
@@ -79,16 +98,24 @@ class Formatter:
         if file.exists():
             file.unlink()
 
-    def generate_versions(self, archives_path: pathlib.Path, content_dict: Dict[str, Dict[str, List[str]]],) -> None:
+    def generate_versions(
+        self,
+        archives_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
         for version, content in content_dict.items():
             self.content = self.helper.title(value=version.replace(".yaml", ""))
             self.content += self.helper.gen_content(content=content_dict)
             self.save(
-                changelog_path=archives_path / version, archives_path=archives_path,
+                changelog_path=archives_path / version,
+                archives_path=archives_path,
             )
 
     def generate_home_changelog(
-        self, archives_path: pathlib.Path, changelog_path: pathlib.Path, content_dict: Dict[str, Dict[str, List[str]]],
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
     ) -> None:
         # generate front page
         latest_version = list(content_dict.keys())[-1]
@@ -98,13 +125,19 @@ class Formatter:
             self.remove_trailling_line(keep=2)
             self.content += self.helper.add_header(value="History", level=2, empty_lines=3)
             self.content += self.generate_history(
-                archives_path=archives_path, latest_version=latest_version.replace(".yaml", ""),
+                archives_path=archives_path,
+                latest_version=latest_version.replace(".yaml", ""),
             )
         self.save(
-            changelog_path=changelog_path, archives_path=archives_path,
+            changelog_path=changelog_path,
+            archives_path=archives_path,
         )
 
-    def generate_history(self, archives_path: pathlib.Path, latest_version: str,) -> str:
+    def generate_history(
+        self,
+        archives_path: pathlib.Path,
+        latest_version: str,
+    ) -> str:
         links = []
         for file in archives_path.glob("*.md"):
             version = file.name.replace(".md", "")
@@ -153,17 +186,23 @@ class Formatter:
         else:
             print(f"{changelog_path.as_posix()} [\033[91mFAILED\33[37m]")
 
-    def save(self, changelog_path: pathlib.Path, archives_path: pathlib.Path,) -> None:
+    def save(
+        self,
+        changelog_path: pathlib.Path,
+        archives_path: pathlib.Path,
+    ) -> None:
         if not archives_path.exists() and not archives_path.is_dir():
             archives_path.mkdir(exist_ok=True)
         changelog_path = changelog_path.with_suffix(".md")
         if not changelog_path.exists():
             self.write_file(
-                changelog_path=changelog_path, status="\033[92mCREATED\33[37m",
+                changelog_path=changelog_path,
+                status="\033[92mCREATED\33[37m",
             )
         elif not self.compare_content(changelog_path=changelog_path):
             self.write_file(
-                changelog_path=changelog_path, status="\33[33mUPDATED\33[37m",
+                changelog_path=changelog_path,
+                status="\33[33mUPDATED\33[37m",
             )
         else:
             print(f"{changelog_path} [\33[34mSKIPPED\33[37m]")

@@ -79,7 +79,11 @@ def main(*args: Tuple[str, str], **kwargs: Dict[str, str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
     parser.add_argument(
-        "--output-file", type=str, default="changelog.md", dest="output_file", help="define changelog outpout",
+        "--output-file",
+        type=str,
+        default="changelog.md",
+        dest="output_file",
+        help="define changelog outpout",
     )
     parser.add_argument(
         "--changelog-folder",
@@ -89,7 +93,12 @@ def main(*args: Tuple[str, str], **kwargs: Dict[str, str]) -> int:
         help="source folder of changelogs",
     )
     parser.add_argument(
-        "--rebuild", type=str, dest="rebuild", default=None, help="rebuild changelog", choices=AVAILABLE_REBUILD_OPTION,
+        "--rebuild",
+        type=str,
+        dest="rebuild",
+        default=None,
+        help="rebuild changelog",
+        choices=AVAILABLE_REBUILD_OPTION,
     )
     parsed_args: argparse.valuespace = parser.parse_args()
     collect_version = Collect(

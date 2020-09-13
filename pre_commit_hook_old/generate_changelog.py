@@ -24,7 +24,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
     parser.add_argument(
-        "--output-file", type=str, default="changelog.md", dest="output_file", help="define changelog outpout",
+        "--output-file",
+        type=str,
+        default="changelog.md",
+        dest="output_file",
+        help="define changelog outpout",
     )
     parser.add_argument(
         "--changelog-folder",
@@ -34,7 +38,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="source folder of changelogs",
     )
     parser.add_argument(
-        "--rebuild", type=str, dest="rebuild", default=None, help="rebuild changelog",
+        "--rebuild",
+        type=str,
+        dest="rebuild",
+        default=None,
+        help="rebuild changelog",
     )
     args = parser.parse_args(argv)
     if args.rebuild and args.rebuild not in AVAILABLE_REBUILD_OPTION:

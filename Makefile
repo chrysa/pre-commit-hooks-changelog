@@ -57,9 +57,9 @@ mypy: ## Run mypy on code => make mypy
 pre-commit: clean ## run localy precommit
 	$(info Make: run pre-commit)
 	@pip install --quiet pre-commit
-	@pre-commit install-hooks || true
-	@pre-commit autoupdate --bleeding-edge || true
-	@pre-commit run --all-files --verbose || true
+	@pre-commit install-hooks
+	@pre-commit autoupdate --bleeding-edge
+	@pre-commit run --all-files --verbose
 pylint: ## Run pylint on code => make pylint
 	@docker-compose run --rm quality bash -c ${pylint}
 pypi: build
