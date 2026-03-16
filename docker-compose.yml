@@ -1,6 +1,4 @@
-version: '3.7'
-
-
+---
 x-app: &default-app
     build: &default-app-build
         context: .
@@ -9,7 +7,7 @@ x-app: &default-app
             - &default-app-python-cache python:3.8-alpine
     command: bash
     volumes:
-        - &default-app-volume-app /pre_commit_hook:/src/pre_commit_hook
+        - &default-app-volume-app ./pre_commit_hook:/src/pre_commit_hook
     working_dir: /src
 
 
