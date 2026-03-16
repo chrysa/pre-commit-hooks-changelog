@@ -1,122 +1,128 @@
 name: Python package
 
-on: [push]
+on:
+    push:
+        branches: ["**"]
+    pull_request:
+        branches: [master, develop]
 
 jobs:
-    build:
+    tests:
+        name: Tests (Python ${{ matrix.python-version }})
         runs-on: ubuntu-latest
         strategy:
-            max-parallel: 4
+            fail-fast: false
             matrix:
-                python-version: [3.8]
+                python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
         steps:
-            -   uses: actions/checkout@v1
+            -   uses: actions/checkout@v4
+
             -   name: Set up Python ${{ matrix.python-version }}
-                uses: actions/setup-python@v1
+                uses: actions/setup-python@v5
                 with:
                     python-version: ${{ matrix.python-version }}
+                    allow-prereleases: true
+                    cache: pip
+
             -   name: Install dependencies
                 run: |
                     python -m pip install --upgrade pip
-                    pip install -r -e .
-    tests:
-        runs-on: ubuntu-latest
-        strategy:
-            max-parallel: 4
-            matrix:
-                python-version: [3.8]
-        steps:
-            -   uses: actions/checkout@v1
-            -   name: Set up Python ${{ matrix.python-version }}
-                uses: actions/setup-python@v1
-                with:
-                    python-version: ${{ matrix.python-version }}
-            -   name: run unit tests
+                    pip install -e ".[tests]"
+
+            -   name: Run tests with coverage
                 run: |
-                    pytest
-    deploy-stable:
-        on:
-            pull_request:
-                branches:
-                    - master
-            runs-on: ubuntu-latest
-            strategy:
-                max-parallel: 4
-                matrix:
-                    python-version: [3.8]
-            steps:
-                -   uses: actions/checkout@v1
-                -   name: Set up Python
-                    uses: actions/setup-python@v1
-                    with:
-                        python-version:  ${{ matrix.python-version }}
-                -   name: Install push dependencies
-                    run: |
-                        python -m pip install --upgrade pip
-                        pip install setuptools wheel twine
-                -   name: Build and publish
-                    env:
-                        TWINE_USERNAME: ${{ secrets.pypi_username }}
-                        TWINE_PASSWORD: ${{ secrets.pypi_password}}
-                    run: |
-                        python setup.py sdist bdist_wheel
-                        twine upload dist/*
-    deploy-test:
-        on:
-            push:
-                branches:
-                    - develop
-            runs-on: ubuntu-latest
-            strategy:
-                max-parallel: 4
-                matrix:
-                    python-version: [3.8]
-            steps:
-                -   uses: actions/checkout@v1
-                -   name: Set up Python
-                    uses: actions/setup-python@v1
-                    with:
-                        python-version:  ${{ matrix.python-version }}
-                -   name: Install dependencies
-                    run: |
-                        python -m pip install --upgrade pip
-                        pip install setuptools wheel twine
-                -   name: Build and publish
-                    env:
-                        TWINE_USERNAME: ${{ secrets.pypi_test_username }}
-                        TWINE_PASSWORD: ${{ secrets.pypi_test_password}}
-                    run: |
-                        python setup.py sdist bdist_wheel
-                        twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-    release_sphinx:
-        needs: [build]
+                    pytest --cov=pre_commit_hook --cov-report=xml --cov-report=term-missing tests/
+
+            -   name: Upload coverage report
+                uses: actions/upload-artifact@v4
+                if: matrix.python-version == '3.14'
+                with:
+                    name: coverage-report
+                    path: coverage.xml
+
+    lint:
+        name: Lint
         runs-on: ubuntu-latest
-        container:
-            image: python:3.6
-            volumes:
-                - dist:dist
-                - public:public
+
         steps:
-            # check out sources that will be used for autodocs, plus readme
-            - uses: actions/checkout@v1
-            # download wheel that was build and uploaded in the build step
-            - uses: actions/download-artifact@v1
-              with:
-                name: distributions
-                path: dist
-            # didn't need to change anything here, but had to add sphinx.ext.githubpages
-            # to my conf.py extensions list. that fixes the broken uploads
-            - name: Building documentation
-              run: |
-                pip install .[docucentation]
-                sphinx-apidoc --no-toc --module-first -o docs/autodoc pre_commit_hook
-                sphinx-build docs public -b dirhtml
-            # still need to build and set the PAT to get a rebuild on the pages job,
-            # apart from that quite clean and nice
-            - name: github pages deploy
-              uses: peaceiris/actions-gh-pages@v2.3.1
-              env:
-                PERSONAL_TOKEN: ${{ secrets.PAT }}
-                PUBLISH_BRANCH: gh-pages
-                PUBLISH_DIR: public
+            -   uses: actions/checkout@v4
+
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: "3.14"
+                    allow-prereleases: true
+                    cache: pip
+
+            -   name: Install lint dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    pip install -e ".[flake8,mypy,pylint]"
+
+            -   name: Run flake8
+                run: flake8 --config=./setup.cfg ./pre_commit_hook
+
+            -   name: Run mypy
+                run: mypy --config-file=./setup.cfg pre_commit_hook/
+                continue-on-error: true
+
+    deploy-test:
+        name: Deploy to TestPyPI
+        needs: [tests, lint]
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: "3.14"
+                    allow-prereleases: true
+                    cache: pip
+
+            -   name: Install build dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    pip install build twine
+
+            -   name: Build package
+                run: python -m build
+
+            -   name: Publish to TestPyPI
+                env:
+                    TWINE_USERNAME: ${{ secrets.pypi_test_username }}
+                    TWINE_PASSWORD: ${{ secrets.pypi_test_password }}
+                run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+    deploy-stable:
+        name: Deploy to PyPI
+        needs: [tests, lint]
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Set up Python
+                uses: actions/setup-python@v5
+                with:
+                    python-version: "3.14"
+                    allow-prereleases: true
+                    cache: pip
+
+            -   name: Install build dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                    pip install build twine
+
+            -   name: Build package
+                run: python -m build
+
+            -   name: Publish to PyPI
+                env:
+                    TWINE_USERNAME: ${{ secrets.pypi_username }}
+                    TWINE_PASSWORD: ${{ secrets.pypi_password }}
+                run: twine upload dist/*
