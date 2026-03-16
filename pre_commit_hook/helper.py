@@ -1,8 +1,12 @@
-from typing import Dict, List, Union, Optional
-from dataclasses import field, dataclass
+from dataclasses import dataclass
+from dataclasses import field
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
 
-@dataclass(init=True)
+@dataclass
 class Helper:
     changelog_entry_available: List[str] = field(default_factory=list)
     level: int = 1
@@ -28,13 +32,13 @@ class Helper:
         self.content += f"{value}\n"
 
     @staticmethod
-    def add_unordred_list(value: List[str]) -> str:
+    def add_unordered_list(value: List[str]) -> str:
         content = "\n"
         for item in value:
             if isinstance(item, str):
                 content += f"* {item}\n"
             else:
-                raise Exception(f"type {type(item)} is not supported")
+                raise TypeError(f"type {type(item)} is not supported in unordered list")
         return content
 
     def gen_content(
@@ -47,11 +51,11 @@ class Helper:
             else:
                 self.add_line(value=content)
         elif isinstance(content, list):
-            self.content += self.add_unordred_list(value=content)
+            self.content += self.add_unordered_list(value=content)
         elif isinstance(content, dict):
             for key, value in content.items():
                 if self.level > 6:
-                    raise Exception(f"only 6 subtitle available but get {self.level}")
+                    raise ValueError(f"only 6 header levels available, got level {self.level}")
                 elif key in self.changelog_entry_available:
                     self.level = 2
                     self.gen_content(content=key)
@@ -60,7 +64,7 @@ class Helper:
                     self.level += 1
                     self.gen_content(content=value)
         else:
-            raise Exception(f"type {type(content)} is not supported")
+            raise TypeError(f"type {type(content)} is not supported")
         self.content += "\n"
         return self.content
 
