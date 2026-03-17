@@ -1,0 +1,25 @@
+added:
+    - badge in readme
+    - pytest container
+    - docker-compose file
+modified:
+    setup.cfg:
+        - rename system command
+    general:
+        - rewrite code
+        - add tests
+        - use anchor on docker-compsoe
+todo:
+    - add alphabetic order
+    - add date on top of version file (created/updated)
+upgraded:
+    makefile:
+        - update some rules
+    dependencies:
+        pre-commit:
+            - PyYAML
+    setup.cfg:
+        - download url
+        - add test setup
+removed:
+    - general dockerfile

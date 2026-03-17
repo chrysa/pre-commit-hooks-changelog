@@ -1,6 +1,7 @@
 default_language_version:
-    python: python3.7
-minimum_pre_commit_version: 1.20.0
+    python: python3.13
+fail_fast: false
+minimum_pre_commit_version: 2.7.1
 repos:
     -   repo: https://github.com/asottile/setup-cfg-fmt
         rev: v1.6.0
@@ -42,29 +43,94 @@ repos:
         hooks:
         -   id: mypy
     -   repo: https://github.com/asottile/setup-cfg-fmt
-        rev: v1.6.0
+        rev: 'v1.11.0'
         hooks:
             -   id: setup-cfg-fmt
+    -   repo: https://github.com/IamTheFij/docker-pre-commit.git
+        rev: 'v2.0.0'
+        hooks:
+            - id: docker-compose-check
+            - id: hadolint
+              args: [--ignore=DL3013, --ignore=SC2102, --ignore=DL3018, --ignore=DL3008, --ignore=DL4006, --ignore=SC2086]
+#    -   repo: local
+#        hooks:
+#            -   id: generate-changelog
+#                name: generate changlog from folder
+#                entry: pre-commit-generate-changelog
+#                language: system
+#                types: [yaml]
+    -   repo: https://github.com/smian/pre-commit-makefile
+        rev: '261f8fb4b31dfdc05d1a1d7fbde1f1462ecde66d'
+        hooks:
+            -   id: makefile-doc
+                stages: ['manual']
+    -   repo: https://github.com/igorshubovych/markdownlint-cli
+        rev: '5d2a7420e4afe22ec6f93c87dc1f23adb42f0241'
+        hooks:
+            -   id: markdownlint
+                args: ['--fix']
+    -   repo: https://github.com/asottile/pyupgrade
+        rev: '1510dc5bf302e4218f6202185b6725e6a2653e07'
+        hooks:
+            -   id: pyupgrade
+                args: ['--py3-only', '--py37-plus']
+#    -   repo: https://github.com/asottile/seed-isort-config
+#        rev: v2.1.1
+#        hooks:
+#            -   id: seed-isort-config
+#    -   repo: https://github.com/timothycrosley/isort
+#        rev: 3e09facb2311f5b5b8bff8da90f4992e57f4bc9e
+#        hooks:
+#            -   id: isort
+#                args: ['--settings-path=./setup.cfg']
+    -   repo: https://github.com/psf/black
+        rev: 'c0a8e4224360a6917dcb5d889b08d5fdcfaf7c2d'
+        hooks:
+            -   id: black
+                args: ['--config=./black.toml']
+    -   repo: https://gitlab.com/pycqa/flake8
+        rev: '2c64d3ec5ab3ad40dc3e7c10ee0d7fa22f94560d'
+        hooks:
+            -   id: flake8
+                args: ['--config=./setup.cfg']
+                stages: ['manual']
+    -   repo: https://github.com/pre-commit/mirrors-pylint
+        rev: 'v2.6.0'
+        hooks:
+            -   id: pylint
+                args: ['--rcfile=./setup.cfg']
+                stages: ['manual']
+    -   repo: https://github.com/asottile/dead
+        rev: '316a95b4d48d78da77b47bce3b8bf1f269e65c95'
+        hooks:
+            -   id: dead
+                args: ['--files=pre_commit_hook/']
+                stages: ['manual']
+    -   repo: https://github.com/pre-commit/mirrors-mypy
+        rev: 'v0.782'
+        hooks:
+            -   id: mypy
+                args: ['--config-file=./setup.cfg']
+                stages: ['manual']
+    -   repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+        rev: '0.1.0'
+        hooks:
+            -   id: yamlfmt
+                stages: ['manual']
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: v2.4.0
+        rev: '31d41ff29115a87808277ee0ec23999b17d5b583'
         hooks:
             -   id: check-ast
             -   id: check-case-conflict
             -   id: check-docstring-first
-            -   id: check-merge-conflict
             -   id: debug-statements
             -   id: end-of-file-fixer
             -   id: fix-encoding-pragma
                 args: [--remove]
             -   id: mixed-line-ending
                 args: [--fix=lf]
-            -   id: name-tests-test
             -   id: trailing-whitespace
-            -   id: flake8
-            -   id: check-yaml
-                files: .(yaml|yml)$
-    -   repo: https://github.com/psf/black
-        rev: stable
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: '31d41ff29115a87808277ee0ec23999b17d5b583'
         hooks:
-            -   id: black
-                language_version: python3.7
+            -   id: check-merge-conflict
