@@ -3,8 +3,13 @@ COPY . /src
 WORKDIR /src
 RUN pip install --quiet --upgrade pip
 
+<<<<<<< HEAD
 FROM base AS application
 RUN pip install --quiet --editable .
+=======
+RUN set -x \
+ && pip install -e .[pre_commit,push,tests]
+>>>>>>> master
 
 FROM application AS pytest
 RUN pip install --quiet .[tests]
