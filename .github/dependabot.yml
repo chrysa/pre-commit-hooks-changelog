@@ -7,7 +7,6 @@ updates:
     labels:
       - "dependencies"
       - "python"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -15,3 +14,7 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"

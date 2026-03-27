@@ -111,3 +111,4 @@ venv.bak/
 
 # test temp files
 tests/tmp/
+.vscode
