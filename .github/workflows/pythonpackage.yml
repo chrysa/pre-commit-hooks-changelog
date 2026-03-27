@@ -24,7 +24,6 @@ jobs:
                     python-version: ${{ matrix.python-version }}
                     allow-prereleases: true
                     cache: pip
-                    cache-dependency-path: setup.cfg
 
             -   name: Install dependencies
                 run: |
@@ -55,7 +54,6 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
-                    cache-dependency-path: setup.cfg
 
             -   name: Install lint dependencies
                 run: |
@@ -84,7 +82,6 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
-                    cache-dependency-path: setup.cfg
 
             -   name: Install build dependencies
                 run: |
@@ -115,7 +112,6 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
-                    cache-dependency-path: setup.cfg
 
             -   name: Install build dependencies
                 run: |
