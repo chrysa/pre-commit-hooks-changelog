@@ -70,7 +70,7 @@ repos:
             -   id: markdownlint
                 args: ['--fix']
     -   repo: https://github.com/asottile/pyupgrade
-        rev: '1510dc5bf302e4218f6202185b6725e6a2653e07'
+        rev: '369aea6489e38ca74a18df494f191857ba484950'
         hooks:
             -   id: pyupgrade
                 args: ['--py3-only', '--py37-plus']
