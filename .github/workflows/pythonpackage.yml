@@ -2,7 +2,7 @@ name: Python package
 
 on:
     push:
-        branches: ["**"]
+        branches: [master, develop]
     pull_request:
         branches: [master, develop]
 
@@ -13,7 +13,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+                python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
         steps:
             -   uses: actions/checkout@v4
@@ -24,6 +24,7 @@ jobs:
                     python-version: ${{ matrix.python-version }}
                     allow-prereleases: true
                     cache: pip
+                    cache-dependency-path: setup.cfg
 
             -   name: Install dependencies
                 run: |
@@ -54,6 +55,7 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
+                    cache-dependency-path: setup.cfg
 
             -   name: Install lint dependencies
                 run: |
@@ -82,6 +84,7 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
+                    cache-dependency-path: setup.cfg
 
             -   name: Install build dependencies
                 run: |
@@ -112,6 +115,7 @@ jobs:
                     python-version: "3.14"
                     allow-prereleases: true
                     cache: pip
+                    cache-dependency-path: setup.cfg
 
             -   name: Install build dependencies
                 run: |
