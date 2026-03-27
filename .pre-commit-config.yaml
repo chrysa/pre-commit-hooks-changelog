@@ -101,7 +101,7 @@ repos:
                 args: ['--rcfile=./setup.cfg']
                 stages: ['manual']
     -   repo: https://github.com/asottile/dead
-        rev: '316a95b4d48d78da77b47bce3b8bf1f269e65c95'
+        rev: 'd41e8a0f742f715952ed0c13dc226ed66f42f4bf'
         hooks:
             -   id: dead
                 args: ['--files=pre_commit_hook/']
