@@ -17,11 +17,9 @@ PYTEST_OPTS_COV   := --cov=pre_commit_hook --cov-branch --cov-config=./setup.cfg
 PYTEST_OPTS_COV_HTML := $(PYTEST_OPTS_COV) --cov-report html:reports/coverage_html_report
 PYTEST_OPTS_REPORTS  := $(PYTEST_OPTS_COV) --cov-report xml:./reports/coverage.xml --junitxml=./reports/tests.xml --cov-report html:reports/coverage_html_report
 
-PYLINT_CMD := pylint --rcfile=./setup.cfg ./pre_commit_hook
-PYLINT_REPORT_CMD := pylint --rcfile=./setup.cfg --exit-zero --score=no --reports=no \
-	--msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" ./pre_commit_hook | tee reports/pylint.txt
-FLAKE8_CMD := flake8 --config=./setup.cfg ./pre_commit_hook
-MYPY_CMD   := mypy --config-file=./setup.cfg pre_commit_hook/
+RUFF_CMD        := ruff check ./pre_commit_hook
+RUFF_FMT_CMD    := ruff format --check ./pre_commit_hook
+MYPY_CMD        := mypy --config-file=./setup.cfg pre_commit_hook/
 
 SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
 	--ext-autodoc --ext-doctest --ext-intersphinx --ext-todo --ext-coverage \
@@ -33,8 +31,8 @@ SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
 # ─── Phony targets ────────────────────────────────────────────────────────────
 
 .PHONY: benchmark build clean compile coverage coverage-html-report \
-	deploy deploy-test documentation down flake8 generate-changelog \
-	help install mypy pre-commit pylint pypi pypi-test quality \
+	deploy deploy-test documentation down ruff ruff-format generate-changelog \
+	help install mypy pre-commit pypi pypi-test quality \
 	tests tests-debug tests-fail-fast tests-func-cov tests-reports tests-10-slower
 
 # ─── Help ─────────────────────────────────────────────────────────────────────
@@ -54,7 +52,7 @@ help: ## Afficher cette aide
 # ─── Build & Clean ────────────────────────────────────────────────────────────
 
 clean: ## Supprimer les artefacts générés (build, dist, cache)
-	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .flake8.log .coverage coverage.xml
+	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .coverage coverage.xml
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 
 build: clean ## Builder les images Docker (sans cache)
@@ -64,7 +62,7 @@ compile: build ## Compiler le package Python (bdist)
 	@docker compose run --rm pytest bash -c "python -m build"
 
 install: ## Installer les dépendances de développement
-	@pip install -e ".[tests,flake8,mypy,pylint,pre_commit]"
+	@pip install -e ".[tests,ruff,mypy,pre_commit]"
 
 down: ## Arrêter et supprimer les conteneurs Docker
 	@docker compose down
@@ -104,16 +102,16 @@ coverage-html-report: ## Générer le rapport de couverture HTML
 
 # ─── Qualité ──────────────────────────────────────────────────────────────────
 
-flake8: ## Linter flake8
-	@docker compose run --rm quality bash -c "$(FLAKE8_CMD)"
+ruff: ## Linter ruff (lint + import sort + style)
+	@docker compose run --rm quality bash -c "$(RUFF_CMD)"
 
-pylint: ## Linter pylint
-	@docker compose run --rm quality bash -c "$(PYLINT_CMD)"
+ruff-format: ## Vérifier le formatage ruff
+	@docker compose run --rm quality bash -c "$(RUFF_FMT_CMD)"
 
 mypy: ## Vérification des types mypy
 	@docker compose run --rm quality bash -c "$(MYPY_CMD)"
 
-quality: flake8 pylint mypy tests ## Lancer tous les linters + tests
+quality: ruff ruff-format mypy tests ## Lancer tous les linters + tests
 
 # ─── Documentation ────────────────────────────────────────────────────────────
 
