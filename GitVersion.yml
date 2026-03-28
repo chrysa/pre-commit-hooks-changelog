@@ -1,0 +1,49 @@
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+mode: Mainline
+tag-prefix: v
+major-version-bump-message: '\+semver:\s?(breaking|major)'
+minor-version-bump-message: '\+semver:\s?(feature|minor)'
+patch-version-bump-message: '\+semver:\s?(fix|patch)'
+no-bump-message: '\+semver:\s?(none|skip)'
+commit-message-incrementing: Enabled
+
+branches:
+    main:
+        regex: ^master$
+        tag: ''
+        increment: Patch
+        prevent-increment-of-merged-branch-version: true
+        track-merge-target: false
+        is-release-branch: true
+    develop:
+        regex: ^develop$
+        tag: alpha
+        increment: Minor
+        prevent-increment-of-merged-branch-version: false
+        track-merge-target: true
+        source-branches:
+            - main
+    feature:
+        regex: ^feature(s)?[/-]
+        tag: '{BranchName}'
+        increment: Minor
+        source-branches:
+            - develop
+    hotfix:
+        regex: ^hotfix(es)?[/-]
+        tag: beta
+        increment: Patch
+        source-branches:
+            - main
+    release:
+        regex: ^releases?[/-]
+        tag: rc
+        increment: None
+        is-release-branch: true
+        source-branches:
+            - develop
+            - main
+
+ignore:
+    sha: []
