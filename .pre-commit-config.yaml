@@ -6,13 +6,13 @@ minimum_pre_commit_version: 3.7.1
 repos:
     # ── Changelog ──────────────────────────────────────────────────────────────
     -   repo: https://github.com/chrysa/pre-commit-hooks-changelog
-        rev: v0.1.4
+        rev: 40d13585c4c845c36108a565f00c23f2b946e9d9
         hooks:
             -   id: generate-changelog
 
     # ── Python tools ───────────────────────────────────────────────────────────
     -   repo: https://github.com/chrysa/pre-commit-tools
-        rev: 0.0.60
+        rev: 18c9b611ebfd6d211a4732baa6834c919c9aa699
         hooks:
             -   id: format-dockerfiles
             -   id: python-print-detection
@@ -29,7 +29,7 @@ repos:
 
     # ── Ruff (remplace black, isort, pyupgrade, flake8, pylint) ───────────────
     -   repo: https://github.com/astral-sh/ruff-pre-commit
-        rev: v0.9.6
+        rev: v0.15.8
         hooks:
             -   id: ruff
                 args: [--fix]
@@ -37,33 +37,33 @@ repos:
 
     # ── Setup.cfg ──────────────────────────────────────────────────────────────
     -   repo: https://github.com/asottile/setup-cfg-fmt
-        rev: v2.8.0
+        rev: v3.2.0
         hooks:
             -   id: setup-cfg-fmt
 
     # ── Mypy ───────────────────────────────────────────────────────────────────
     -   repo: https://github.com/pre-commit/mirrors-mypy
-        rev: v1.15.0
+        rev: v1.19.1
         hooks:
             -   id: mypy
                 additional_dependencies: [ruamel.yaml]
 
     # ── Docker ─────────────────────────────────────────────────────────────────
     -   repo: https://github.com/IamTheFij/docker-pre-commit
-        rev: v3.0.1
+        rev: 62a24686f7675bd45dabe32efe0473b746adac73
         hooks:
             -   id: docker-compose-check
 
     # ── Markdown ───────────────────────────────────────────────────────────────
     -   repo: https://github.com/igorshubovych/markdownlint-cli
-        rev: v0.44.0
+        rev: f7ed74202ac8ec26bab4a68359556c5243df142f
         hooks:
             -   id: markdownlint
                 args: [--fix]
 
     # ── Général ────────────────────────────────────────────────────────────────
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: v5.0.0
+        rev: f1dff44d3a9ae852957f34def96390f28719c232
         hooks:
             -   id: trailing-whitespace
             -   id: end-of-file-fixer
