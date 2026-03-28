@@ -108,6 +108,7 @@ venv.bak/
 
 .idea/
 /.history
+.vscode/
 
 # test temp files
 tests/tmp/

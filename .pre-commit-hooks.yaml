@@ -1,7 +1,9 @@
 -   id: generate-changelog
-    name: generate changlog from folder
+    name: generate changelog from folder
     entry: generate-changelog
-    language: system
+    language: python
+    minimum_pre_commit_version: '3.7.1'
+    language_version: python3
     files: ^(changelog|changelogs)/.*\.(yml|yaml)$
     types: [yaml]
     stages: [commit, push, manual]
