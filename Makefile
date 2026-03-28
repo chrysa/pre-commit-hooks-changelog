@@ -1,84 +1,144 @@
+#!make
+ifneq (,$(findstring n,$(firstword -$(MAKEFLAGS))))
+    DRY_RUN := 1
+endif
+
 .DEFAULT_GOAL := help
 
-pytest_test_only="pytest --new-first --capture=sys"
-pytest_reports="pytest --cov=. --cov-branch --cov-config=./setup.cfg --cov-report xml:./reports/coverage.xml --junitxml=./reports/tests.xml --cov-report html:reports/coverage_html_report"
-pytest_func_cov="pytest --func_cov=pre_commit_hook"
-pytest_debug="pytest --failed-first --pdb"
-pytest_test_fail_fast="pytest --new-first --capture=sys --failed-first --showlocals"
-pytest_10_slower="pytest --durations=10"
-pytest_benchmark="pytest --benchmark-enable"
-pytest_coverage="pytest --cov=. --cov-branch --cov-config=./setup.cfg"
-pytest_coverage_html_report="pytest --cov=. --cov-branch --cov-config=./setup.cfg --cov-report html:reports/coverage_html_report"
-documentation="sphinx-apidoc --follow-links --separate --module-first --ext-autodoc --ext-doctest --ext-intersphinx --ext-todo --ext-coverage --ext-mathjax --ext-viewcode --output-dir ./docs/source ./pre_commit_hook \
+# ─── Variables ────────────────────────────────────────────────────────────────
+
+PYTEST            := pytest
+PYTEST_OPTS_ONLY  := --new-first --capture=sys
+PYTEST_OPTS_FF    := --new-first --capture=sys --failed-first --showlocals
+PYTEST_OPTS_DEBUG := --failed-first --pdb
+PYTEST_OPTS_SLOW  := --durations=10
+PYTEST_OPTS_BENCH := --benchmark-enable
+PYTEST_OPTS_COV   := --cov=pre_commit_hook --cov-branch --cov-config=./setup.cfg
+PYTEST_OPTS_COV_HTML := $(PYTEST_OPTS_COV) --cov-report html:reports/coverage_html_report
+PYTEST_OPTS_REPORTS  := $(PYTEST_OPTS_COV) --cov-report xml:./reports/coverage.xml --junitxml=./reports/tests.xml --cov-report html:reports/coverage_html_report
+
+PYLINT_CMD := pylint --rcfile=./setup.cfg ./pre_commit_hook
+PYLINT_REPORT_CMD := pylint --rcfile=./setup.cfg --exit-zero --score=no --reports=no \
+	--msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" ./pre_commit_hook | tee reports/pylint.txt
+FLAKE8_CMD := flake8 --config=./setup.cfg ./pre_commit_hook
+MYPY_CMD   := mypy --config-file=./setup.cfg pre_commit_hook/
+
+SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
+	--ext-autodoc --ext-doctest --ext-intersphinx --ext-todo --ext-coverage \
+	--ext-mathjax --ext-viewcode --output-dir ./docs/source ./pre_commit_hook \
 	&& sphinx-build --color -a -b html -j auto -c ./docs -d ./docs ./docs ./docs/build/html \
 	&& sphinx-build --color -a -b changes -j auto -c ./docs -d ./docs ./docs ./docs/build/changes \
-	&& sphinx-build --color -a -b coverage -j auto -c ./docs -d ./docs ./docs ./docs/build/coverage"
-pylint="pylint --rcfile=./setup.cfg ./pre_commit_hook"
-pylint_reports="pylint --rcfile=./setup.cfg --exit-zero --score=no --reports=no --msg-template=\"{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}\" ./pre_commit_hook | tee reports/pylint.txt"
-flake8="flake8 --config=./setup.cfg ./pre_commit_hook"
-mypy="mypy --config-file=./setup.cfg"
+	&& sphinx-build --color -a -b coverage -j auto -c ./docs -d ./docs ./docs ./docs/build/coverage
 
-.PHONY: benchmark build clean coverage coverage-html-report documentation deploy down flake8 help install mypy pre-commit pylint pypi pypi-test quality tests tests-fail-fast tests-10-slower tests-debug tests-func-cov tests-reports
+# ─── Phony targets ────────────────────────────────────────────────────────────
 
-benchmark: ## Profile unit test
-	@docker compose run --rm pytest bash -c ${pytest_benchmark}
-build: clean
-	$(info Make: Build service ${service_name})
-	@docker compose build --no-cache ${service_name}
-clean:
-	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .flake8.log .coverage
+.PHONY: benchmark build clean compile coverage coverage-html-report \
+	deploy deploy-test documentation down flake8 generate-changelog \
+	help install mypy pre-commit pylint pypi pypi-test quality \
+	tests tests-debug tests-fail-fast tests-func-cov tests-reports tests-10-slower
+
+# ─── Help ─────────────────────────────────────────────────────────────────────
+
+help: ## Afficher cette aide
+	@echo "==================================================================="
+	@echo "            pre-commit-hooks-changelog — Makefile help"
+	@echo "==================================================================="
+	@echo ""
+	@echo "Available commands:"
+	@echo ""
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-28s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "==================================================================="
+
+# ─── Build & Clean ────────────────────────────────────────────────────────────
+
+clean: ## Supprimer les artefacts générés (build, dist, cache)
+	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .flake8.log .coverage coverage.xml
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-compile: build
-	@docker-compose run --rm pytest bash -c "python setup.py bdist"
-coverage: ## Run coverage => make coverage
-	@docker compose run --rm pytest bash -c ${pytest_coverage}
-coverage-html-report: ## Run coverage html report => make coverage-html-report
-	@docker compose run --rm pytest bash -c ${pytest_coverage_html_report}
-documentation: ## Build documentation => make documentation
-	@docker compose run --rm documentation bash -c ${documentation}
-deploy: clean build pypi pypi-test
-	git push
-down: ## Down project containers => make down
-	$(info Make: Down)
+
+build: clean ## Builder les images Docker (sans cache)
+	@docker compose build --no-cache
+
+compile: build ## Compiler le package Python (bdist)
+	@docker compose run --rm pytest bash -c "python -m build"
+
+install: ## Installer les dépendances de développement
+	@pip install -e ".[tests,flake8,mypy,pylint,pre_commit]"
+
+down: ## Arrêter et supprimer les conteneurs Docker
 	@docker compose down
-flake8: ## run flake8 => make flake8
-	@docker compose run --rm quality bash -c ${flake8}
-generate_changelog: ## generate changelog
-	@docker-compose run --rm generate_changelog bash -c generate-changelog
-help: ## This help dialog. => make help
-	@echo "Hello to the generate changelog Makefile\n"
-	@IFS=$$'\n' ; \
-	printf "%-30s %s\n" "target" "help" ; \
-	printf "%-30s %s\n" "------" "----" ; \
-	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-mypy: ## Run mypy on code => make mypy
-	@docker compose run --rm quality bash -c ${mypy}
-pre-commit: clean ## run localy precommit
-	$(info Make: run pre-commit)
+
+# ─── Tests ────────────────────────────────────────────────────────────────────
+
+tests: ## Lancer les tests unitaires
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_ONLY)"
+
+tests-fail-fast: ## Tests — arrêter au premier échec
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_FF)"
+
+tests-debug: ## Tests — lancer pdb au premier échec
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_DEBUG)"
+
+tests-10-slower: ## Tests — afficher les 10 tests les plus lents
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_SLOW)"
+
+tests-func-cov: ## Tests — afficher la couverture par fonction
+	@docker compose run --rm pytest bash -c "$(PYTEST) --func_cov=pre_commit_hook"
+
+tests-reports: ## Tests — générer les rapports XML / HTML
+	@mkdir -p reports
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_REPORTS)"
+
+benchmark: ## Profiler les tests unitaires (benchmark)
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_BENCH)"
+
+# ─── Coverage ─────────────────────────────────────────────────────────────────
+
+coverage: ## Lancer la couverture de code
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV)"
+
+coverage-html-report: ## Générer le rapport de couverture HTML
+	@mkdir -p reports
+	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV_HTML)"
+
+# ─── Qualité ──────────────────────────────────────────────────────────────────
+
+flake8: ## Linter flake8
+	@docker compose run --rm quality bash -c "$(FLAKE8_CMD)"
+
+pylint: ## Linter pylint
+	@docker compose run --rm quality bash -c "$(PYLINT_CMD)"
+
+mypy: ## Vérification des types mypy
+	@docker compose run --rm quality bash -c "$(MYPY_CMD)"
+
+quality: flake8 pylint mypy tests ## Lancer tous les linters + tests
+
+# ─── Documentation ────────────────────────────────────────────────────────────
+
+documentation: ## Générer la documentation Sphinx
+	@docker compose run --rm documentation bash -c "$(SPHINX_CMD)"
+
+# ─── Changelog ────────────────────────────────────────────────────────────────
+
+generate-changelog: ## Générer le changelog depuis le dossier changelog/
+	@docker compose run --rm generate_changelog bash -c generate-changelog
+
+# ─── Pre-commit ───────────────────────────────────────────────────────────────
+
+pre-commit: ## Installer et exécuter pre-commit sur tous les fichiers
 	@pip install --quiet pre-commit
-	@pre-commit install-hooks
-	@pre-commit autoupdate --bleeding-edge
+	@pre-commit install
+	@pre-commit autoupdate
 	@pre-commit run --all-files --verbose
-pylint: ## Run pylint on code => make pylint
-	@docker compose run --rm quality bash -c ${pylint}
-pypi: build
-	python3 -m twine upload dist/*
-pypi-test: build
-	python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-quality: ## run pylint, flake8, mypy, and tests => make quality
-	@make -S pylint
-	@make -S flake8
-	@make -S mypy
-	@make -S tests
-tests: ## Run tests => make tests
-	@docker compose run --rm pytest bash -c ${pytest_test_only}
-tests-fail-fast: ## Run tests and stop on first fail => make tests-fail-fast
-	@docker compose run --rm pytest bash -c ${pytest_test_fail_fast}
-tests-10-slower: ## Run tests and display 10 slowers => make tests-10-slower
-	@docker compose run --rm pytest bash -c ${pytest_10_slower}
-tests-debug: ## Run tests and launch pdb on first failed => make tests-debug
-	@docker compose run --rm pytest bash -c ${pytest_debug}
-tests-func-cov: ## Run tests and display function cov => make tests-func-cov
-	@docker compose run --rm pytest bash -c ${pytest_func_cov}
-tests-reports: ## Run tests and generate reports => make tests-reports
-	@docker compose run --rm pytest bash -c ${pytest_reports}
+
+# ─── Publication PyPI ─────────────────────────────────────────────────────────
+
+pypi: compile ## Publier sur PyPI
+	@python3 -m twine upload dist/*
+
+pypi-test: compile ## Publier sur TestPyPI
+	@python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+deploy: clean pypi pypi-test ## Builder, publier sur PyPI et TestPyPI
