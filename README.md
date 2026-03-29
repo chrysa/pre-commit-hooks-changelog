@@ -1,73 +1,86 @@
-# badges
+# pre-commit-hooks-changelog
 
-|    GENERAL    |
-|---|---|---|---|
-|[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/chrysa/pre-commit-hooks-changelog/graphs/commit-activity)|[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)|[![made-with-sphinx-doc](https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/)|[![made-with-Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)](http://commonmark.org)|
-|[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/chrysa/pre-commit-hooks-changelog/releases/)|[![PyPI download day](https://img.shields.io/pypi/dd/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|[![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|
-
-|     CI STATUS    |
-|------------------|
-| master | develop |
-|:------:|:-------:|
-| ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=master) | ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=develop) |
+[![CI](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml/badge.svg?branch=master)](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=chrysa_pre-commit-hooks-changelog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=chrysa_pre-commit-hooks-changelog)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=chrysa_pre-commit-hooks-changelog&metric=coverage)](https://sonarcloud.io/summary/new_code?id=chrysa_pre-commit-hooks-changelog)
+[![codecov](https://codecov.io/gh/chrysa/pre-commit-hooks-changelog/graph/badge.svg)](https://codecov.io/gh/chrysa/pre-commit-hooks-changelog)
+[![PyPI version](https://img.shields.io/pypi/v/pre-commit-hooks-changelog.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/pre-commit-hooks-changelog.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/pre-commit-hooks-changelog.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)
+[![GitHub release](https://img.shields.io/github/v/release/chrysa/pre-commit-hooks-changelog)](https://github.com/chrysa/pre-commit-hooks-changelog/releases/)
+[![Maintained](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/chrysa/pre-commit-hooks-changelog/graphs/commit-activity)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 [Changelog](changelog.md)
 
-## pre-commit-hooks-changelog
+## Overview
 
-generate a markdown changelog from folder of yaml files
+Generate a markdown changelog from a folder of YAML files.
 
 ### Using pre-commit-hooks-changelog with pre-commit
 
 Add this to your `.pre-commit-config.yaml`
 
-    -   repo: https://github.com/chrysa/pre-commit-hooks-changelog
-        rev: v0.2.0  # Use the ref you want to point at
-        hooks:
-        -   id: generate-changelog
+```yaml
+-   repo: https://github.com/chrysa/pre-commit-hooks-changelog
+    rev: v0.2.0  # Use the ref you want to point at
+    hooks:
+    -   id: generate-changelog
+```
 
 ### Options
 
-|   |   |
-|---|---|
-| `--output-file` | define changelog outpout |
-| `--changelog-folder` | source folder of changelogs |
-| `--rebuild` | rebuild changelog see below |
+| Option | Description |
+| ------ | ----------- |
+| `--output-file` | Define changelog output file path |
+| `--changelog-folder` | Source folder containing changelog YAML files |
+| `--rebuild` | Rebuild changelog (see rebuild options below) |
 
 #### Rebuild options
 
-|   |   |
-|---|---|
-| `all` | rebuild changelog from scratch |
-| `versions` | rebuild changelog for each version |
-| `latest` | rebuild latest changelog |
-| `home` | rebuild changelog file on repo root |
+| Value | Description |
+| ----- | ----------- |
+| `all` | Rebuild changelog from scratch |
+| `versions` | Rebuild changelog for each version |
+| `latest` | Rebuild latest changelog |
+| `home` | Rebuild changelog file on repo root |
 
 ### Standalone
 
 `pip install pre-commit-hooks-changelog`
 
 <!-- START makefile-doc -->
-```
+```text
 $ make help
-Hello to the generate changelog Makefile
+pre-commit-hooks-changelog — Makefile help
 
 target                         help
 ------                         ----
-benchmark                      Profile unit test
-coverage-html-report           Run coverage html report => make coverage-html-report
-coverage                       Run coverage => make coverage
-documentation                  Build documentation => make documentation
-down                           Down project containers => make down
-generate_changelog             generate changelog
-help                           This help dialog. => make help
-mypy                           Run mypy on code => make mypy
-pre-commit                     run localy precommit
-pylint                         Run pylint on code => make pylint
-quality                        run pylint, flake8, mypy, and tests => make quality
-tests-debug                    Run tests and launch pdb on first failed => make tests-debug
-tests-fail-fast                Run tests and stop on first fail => make tests-fail-fast
-tests-func-cov                 Run tests and display function cov => make tests-func-cov
-tests-reports                  Run tests and generate reports => make tests-reports
+benchmark                      Profile unit tests (benchmark)
+build                          Build Docker images (no cache)
+clean                          Remove generated artifacts (build, dist, cache)
+compile                        Compile Python package (bdist)
+coverage                       Run code coverage
+coverage-html-report           Generate HTML coverage report
+deploy                         Build, publish to PyPI and TestPyPI
+documentation                  Build Sphinx documentation
+down                           Stop and remove Docker containers
+generate-changelog             Generate changelog from changelog/ folder
+help                           Show this help
+install                        Install development dependencies
+mypy                           Run mypy type check
+pre-commit                     Install and run pre-commit on all files
+pypi                           Publish to PyPI
+pypi-test                      Publish to TestPyPI
+quality                        Run all linters + tests
+ruff                           Run ruff linter (lint + import sort + style)
+ruff-format                    Check ruff formatting
+tests                          Run unit tests
+tests-10-slower                Tests — display the 10 slowest tests
+tests-debug                    Tests — drop into pdb on first failure
+tests-fail-fast                Tests — stop at first failure
+tests-func-cov                 Tests — show per-function coverage
+tests-reports                  Tests — generate XML / HTML reports
 ```
 <!-- END makefile-doc -->

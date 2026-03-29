@@ -18,6 +18,10 @@ updates:
             github-actions:
                 patterns:
                     - "*"
+                exclude-patterns:
+                    - "chrysa/github-actions*"
+                    - "chrysa/pre-commit-tools*"
+                    - "chrysa/pre-commit-hooks-changelog*"
 
     # ── pip / Python ───────────────────────────────────────────────────────────
     -   package-ecosystem: pip
@@ -50,3 +54,7 @@ updates:
             - pre-commit
         commit-message:
             prefix: "chore"
+        ignore:
+            # Managed manually — autoupdate replaces semver tags with SHAs
+            -   dependency-name: "https://github.com/chrysa/pre-commit-tools"
+            -   dependency-name: "https://github.com/chrysa/pre-commit-hooks-changelog"

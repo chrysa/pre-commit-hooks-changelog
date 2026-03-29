@@ -1,21 +1,23 @@
+# Pull Request
+
 ## Description
 
-<!-- Décrivez brièvement les changements apportés par cette PR -->
+<!-- Briefly describe the changes introduced by this PR -->
 
-## Type de changement
+## Type of change
 
--   [ ] Bug fix (correction sans breaking change)
--   [ ] New feature (ajout de fonctionnalité sans breaking change)
--   [ ] Breaking change (correction ou fonctionnalité qui change le comportement existant)
--   [ ] Refactoring (pas de changement fonctionnel)
--   [ ] CI/CD
--   [ ] Documentation
+- [ ] Bug fix (non-breaking fix)
+- [ ] New feature (non-breaking addition)
+- [ ] Breaking change (fix or feature that alters existing behaviour)
+- [ ] Refactoring (no functional change)
+- [ ] CI/CD
+- [ ] Documentation
 
-## Contexte
+## Context
 
-<!-- Issue liée : fixes #xxx ou closes #xxx -->
+<!-- Related issue: fixes #xxx or closes #xxx -->
 
-## Changements effectués
+## Changes made
 
 -
 -
@@ -23,14 +25,14 @@
 
 ## Tests
 
--   [ ] Les tests existants passent (`make tests`)
--   [ ] De nouveaux tests ont été ajoutés pour couvrir les changements
--   [ ] La couverture de code est maintenue ou améliorée
+- [ ] Existing tests pass (`make tests`)
+- [ ] New tests have been added to cover the changes
+- [ ] Code coverage is maintained or improved
 
 ## Checklist
 
--   [ ] Le code respecte les conventions du projet
--   [ ] `make quality` passe sans erreur
--   [ ] `pre-commit run --all-files` passe
--   [ ] La documentation est mise à jour si nécessaire
--   [ ] Le changelog a été mis à jour dans `changelog/`
+- [ ] Code follows the project conventions
+- [ ] `make quality` passes without errors
+- [ ] `pre-commit run --all-files` passes
+- [ ] Documentation is updated if necessary
+- [ ] Changelog has been updated in `changelog/`

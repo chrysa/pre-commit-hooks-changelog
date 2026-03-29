@@ -2,7 +2,7 @@ blank_issues_enabled: false
 contact_links:
     -   name: Documentation
         url: https://github.com/chrysa/pre-commit-hooks-changelog#readme
-        about: Consulter la documentation du projet
+        about: Read the project documentation
     -   name: Discussions
         url: https://github.com/chrysa/pre-commit-hooks-changelog/discussions
-        about: Poser une question ou discuter du projet
+        about: Ask a question or discuss the project
