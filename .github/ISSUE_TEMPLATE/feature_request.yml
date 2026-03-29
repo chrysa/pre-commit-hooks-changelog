@@ -1,52 +1,52 @@
 name: Feature Request
-description: Proposer une amélioration ou une nouvelle fonctionnalité
+description: Suggest an improvement or a new feature
 title: "[Feature] "
 labels: ["enhancement"]
 body:
     -   type: markdown
         attributes:
             value: |
-                Merci de proposer une amélioration. Décrivez votre besoin aussi clairement que possible.
+                Thank you for suggesting an improvement. Describe your need as clearly as possible.
 
     -   type: textarea
         id: problem
         attributes:
-            label: Problème ou besoin
-            description: Quel problème cette fonctionnalité résoudrait-elle ?
-            placeholder: Je trouve frustrant de ne pas pouvoir...
+            label: Problem or need
+            description: What problem would this feature solve?
+            placeholder: I find it frustrating that I can't...
         validations:
             required: true
 
     -   type: textarea
         id: solution
         attributes:
-            label: Solution proposée
-            description: Décrivez la solution que vous imaginez.
+            label: Proposed solution
+            description: Describe the solution you have in mind.
         validations:
             required: true
 
     -   type: textarea
         id: alternatives
         attributes:
-            label: Alternatives envisagées
-            description: Avez-vous envisagé d'autres approches ?
+            label: Alternatives considered
+            description: Have you considered other approaches?
         validations:
             required: false
 
     -   type: textarea
         id: usecase
         attributes:
-            label: Cas d'usage
-            description: Décrivez le cas d'usage concret.
+            label: Use case
+            description: Describe the concrete use case.
             placeholder: |
-                Dans un projet avec plusieurs équipes, il serait utile de...
+                In a project with multiple teams, it would be useful to...
         validations:
             required: false
 
     -   type: textarea
         id: context
         attributes:
-            label: Contexte additionnel
-            description: Tout autre élément (screenshots, liens, références).
+            label: Additional context
+            description: Any other element (screenshots, links, references).
         validations:
             required: false

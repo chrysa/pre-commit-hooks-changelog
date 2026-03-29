@@ -37,7 +37,7 @@ SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
 
 # ─── Help ─────────────────────────────────────────────────────────────────────
 
-help: ## Afficher cette aide
+help: ## Show this help
 	@echo "==================================================================="
 	@echo "            pre-commit-hooks-changelog — Makefile help"
 	@echo "==================================================================="
@@ -51,92 +51,91 @@ help: ## Afficher cette aide
 
 # ─── Build & Clean ────────────────────────────────────────────────────────────
 
-clean: ## Supprimer les artefacts générés (build, dist, cache)
+clean: ## Remove generated artifacts (build, dist, cache)
 	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .coverage coverage.xml
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 
-build: clean ## Builder les images Docker (sans cache)
+build: clean ## Build Docker images (no cache)
 	@docker compose build --no-cache
 
-compile: build ## Compiler le package Python (bdist)
+compile: build ## Compile Python package (bdist)
 	@docker compose run --rm pytest bash -c "python -m build"
 
-install: ## Installer les dépendances de développement
+install: ## Install development dependencies
 	@pip install -e ".[tests,ruff,mypy,pre_commit]"
 
-down: ## Arrêter et supprimer les conteneurs Docker
+down: ## Stop and remove Docker containers
 	@docker compose down
 
 # ─── Tests ────────────────────────────────────────────────────────────────────
 
-tests: ## Lancer les tests unitaires
+tests: ## Run unit tests
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_ONLY)"
 
-tests-fail-fast: ## Tests — arrêter au premier échec
+tests-fail-fast: ## Tests — stop at first failure
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_FF)"
 
-tests-debug: ## Tests — lancer pdb au premier échec
+tests-debug: ## Tests — drop into pdb on first failure
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_DEBUG)"
 
-tests-10-slower: ## Tests — afficher les 10 tests les plus lents
+tests-10-slower: ## Tests — display the 10 slowest tests
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_SLOW)"
 
-tests-func-cov: ## Tests — afficher la couverture par fonction
+tests-func-cov: ## Tests — show per-function coverage
 	@docker compose run --rm pytest bash -c "$(PYTEST) --func_cov=pre_commit_hook"
 
-tests-reports: ## Tests — générer les rapports XML / HTML
+tests-reports: ## Tests — generate XML / HTML reports
 	@mkdir -p reports
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_REPORTS)"
 
-benchmark: ## Profiler les tests unitaires (benchmark)
+benchmark: ## Profile unit tests (benchmark)
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_BENCH)"
 
 # ─── Coverage ─────────────────────────────────────────────────────────────────
 
-coverage: ## Lancer la couverture de code
+coverage: ## Run code coverage
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV)"
 
-coverage-html-report: ## Générer le rapport de couverture HTML
+coverage-html-report: ## Generate HTML coverage report
 	@mkdir -p reports
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV_HTML)"
 
-# ─── Qualité ──────────────────────────────────────────────────────────────────
+# ─── Quality ──────────────────────────────────────────────────────────────
 
-ruff: ## Linter ruff (lint + import sort + style)
+ruff: ## Run ruff linter (lint + import sort + style)
 	@docker compose run --rm quality bash -c "$(RUFF_CMD)"
 
-ruff-format: ## Vérifier le formatage ruff
+ruff-format: ## Check ruff formatting
 	@docker compose run --rm quality bash -c "$(RUFF_FMT_CMD)"
 
-mypy: ## Vérification des types mypy
+mypy: ## Run mypy type check
 	@docker compose run --rm quality bash -c "$(MYPY_CMD)"
 
-quality: ruff ruff-format mypy tests ## Lancer tous les linters + tests
+quality: ruff ruff-format mypy tests ## Run all linters + tests
 
 # ─── Documentation ────────────────────────────────────────────────────────────
 
-documentation: ## Générer la documentation Sphinx
+documentation: ## Build Sphinx documentation
 	@docker compose run --rm documentation bash -c "$(SPHINX_CMD)"
 
 # ─── Changelog ────────────────────────────────────────────────────────────────
 
-generate-changelog: ## Générer le changelog depuis le dossier changelog/
+generate-changelog: ## Generate changelog from changelog/ folder
 	@docker compose run --rm generate_changelog bash -c generate-changelog
 
 # ─── Pre-commit ───────────────────────────────────────────────────────────────
 
-pre-commit: ## Installer et exécuter pre-commit sur tous les fichiers
+pre-commit: ## Install and run pre-commit on all files
 	@pip install --quiet pre-commit
 	@pre-commit install
-	@pre-commit autoupdate
 	@pre-commit run --all-files --verbose
 
-# ─── Publication PyPI ─────────────────────────────────────────────────────────
+# ─── PyPI publish ─────────────────────────────────────────────────────────
 
-pypi: compile ## Publier sur PyPI
+pypi: compile ## Publish to PyPI
 	@python3 -m twine upload dist/*
 
-pypi-test: compile ## Publier sur TestPyPI
+pypi-test: compile ## Publish to TestPyPI
 	@python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-deploy: clean pypi pypi-test ## Builder, publier sur PyPI et TestPyPI
+deploy: clean pypi pypi-test ## Build, publish to PyPI and TestPyPI

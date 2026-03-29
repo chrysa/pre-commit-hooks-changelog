@@ -1,47 +1,47 @@
 name: Bug Report
-description: Signaler un bug ou un comportement inattendu
+description: Report a bug or unexpected behaviour
 title: "[Bug] "
 labels: ["bug"]
 body:
     -   type: markdown
         attributes:
             value: |
-                Merci de signaler ce bug. Veuillez remplir le formulaire ci-dessous aussi précisément que possible.
+                Thank you for reporting this bug. Please fill in the form below as precisely as possible.
 
     -   type: textarea
         id: description
         attributes:
-            label: Description du bug
-            description: Une description claire et concise du bug.
-            placeholder: Décrivez le problème...
+            label: Bug description
+            description: A clear and concise description of the bug.
+            placeholder: Describe the problem...
         validations:
             required: true
 
     -   type: textarea
         id: reproduction
         attributes:
-            label: Étapes pour reproduire
-            description: Les étapes qui permettent de reproduire le comportement.
+            label: Steps to reproduce
+            description: Steps that allow reproducing the behaviour.
             placeholder: |
-                1. Configurer `.pre-commit-config.yaml` avec...
-                2. Lancer `pre-commit run ...`
-                3. Observer l'erreur...
+                1. Configure `.pre-commit-config.yaml` with...
+                2. Run `pre-commit run ...`
+                3. Observe the error...
         validations:
             required: true
 
     -   type: textarea
         id: expected
         attributes:
-            label: Comportement attendu
-            description: Ce qui devrait se passer.
+            label: Expected behaviour
+            description: What should happen.
         validations:
             required: true
 
     -   type: textarea
         id: actual
         attributes:
-            label: Comportement observé
-            description: Ce qui se passe réellement. Incluez les messages d'erreur ou logs.
+            label: Actual behaviour
+            description: What actually happens. Include error messages or logs.
             render: shell
         validations:
             required: true
@@ -49,32 +49,32 @@ body:
     -   type: input
         id: version
         attributes:
-            label: Version de pre-commit-hooks-changelog
-            placeholder: ex. v0.2.0
+            label: pre-commit-hooks-changelog version
+            placeholder: e.g. v0.2.0
         validations:
             required: true
 
     -   type: input
         id: python
         attributes:
-            label: Version Python
-            placeholder: ex. 3.13.0
+            label: Python version
+            placeholder: e.g. 3.13.0
         validations:
             required: true
 
     -   type: input
         id: precommit
         attributes:
-            label: Version pre-commit
-            placeholder: ex. 3.7.1
+            label: pre-commit version
+            placeholder: e.g. 3.7.1
         validations:
             required: false
 
     -   type: textarea
         id: config
         attributes:
-            label: Configuration .pre-commit-config.yaml
-            description: La section de votre config utilisant ce hook.
+            label: .pre-commit-config.yaml configuration
+            description: The section of your config using this hook.
             render: yaml
         validations:
             required: false
@@ -82,7 +82,7 @@ body:
     -   type: textarea
         id: context
         attributes:
-            label: Contexte additionnel
-            description: Tout autre élément utile (OS, environment, etc.).
+            label: Additional context
+            description: Any other useful information (OS, environment, etc.).
         validations:
             required: false
