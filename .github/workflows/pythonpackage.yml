@@ -130,7 +130,9 @@ jobs:
             -   name: Run pre-commit
                 run: pre-commit run --all-files --show-diff-on-failure
                 env:
-                    SKIP: generate-changelog
+                    # generate-changelog requires local install + changelog/ YAML files
+                    # env-file-check / requirements-sort have no matching files in CI
+                    SKIP: generate-changelog,env-file-check,requirements-sort
 
     # ── Deploy TestPyPI ────────────────────────────────────────────────────────
     deploy-test:
