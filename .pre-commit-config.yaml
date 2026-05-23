@@ -118,7 +118,7 @@ repos:
             -   id: yamlfmt
                 stages: ['manual']
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: '31d41ff29115a87808277ee0ec23999b17d5b583'
+        rev: 'fa6b006f0e53d6c0a4a30d6f7b1200a899444634'
         hooks:
             -   id: check-ast
             -   id: check-case-conflict
@@ -131,6 +131,6 @@ repos:
                 args: [--fix=lf]
             -   id: trailing-whitespace
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: '31d41ff29115a87808277ee0ec23999b17d5b583'
+        rev: 'fa6b006f0e53d6c0a4a30d6f7b1200a899444634'
         hooks:
             -   id: check-merge-conflict
