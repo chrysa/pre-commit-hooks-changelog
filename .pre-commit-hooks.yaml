@@ -1,7 +1,8 @@
 -   id: generate-changelog
-    name: generate changlog from folder
+    name: generate changelog from folder
     entry: generate-changelog
-    language: system
+    language: python
+    additional_dependencies: [pre-commit-hooks-changelog]
     files: ^(changelog|changelogs)/.*\.(yml|yaml)$
     types: [yaml]
     stages: [commit, push, manual]
