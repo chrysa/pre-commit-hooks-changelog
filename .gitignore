@@ -111,4 +111,7 @@ venv.bak/
 
 # test temp files
 tests/tmp/
-.vscode
+.vscodegraphify
+sys
+graphify
+graphify-out/
