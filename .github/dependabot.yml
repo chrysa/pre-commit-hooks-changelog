@@ -1,20 +1,35 @@
-version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "dependencies"
-      - "python"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "dependencies"
-      - "github-actions"
-  - package-ecosystem: "pre-commit"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+- directory: /
+  labels:
+  - dependencies
+  - python
+  package-ecosystem: pip
+  schedule:
+    interval: weekly
+- directory: /
+  labels:
+  - dependencies
+  - github-actions
+  package-ecosystem: github-actions
+  schedule:
+    interval: weekly
+- directory: /
+  package-ecosystem: pre-commit
+  schedule:
+    interval: weekly
+- assignees:
+  - chrysa
+  commit-message:
+    prefix: '[docker] '
+  directory: /
+  labels:
+  - dependencies
+  - Docker
+  open-pull-requests-limit: 5
+  package-ecosystem: docker
+  reviewers:
+  - chrysa
+  schedule:
+    cronjob: 0 4 * * 5
+    interval: cron
+version: 2
