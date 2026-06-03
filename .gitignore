@@ -115,3 +115,8 @@ tests/tmp/
 sys
 graphify
 graphify-out/
+
+# graphify (local knowledge graph — never commit)
+/graphify
+/sys
+.graphify_version
