@@ -108,3 +108,10 @@ venv.bak/
 
 .idea/
 /.history
+
+# test temp files
+tests/tmp/
+.vscodegraphify
+sys
+graphify
+graphify-out/

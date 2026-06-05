@@ -21,29 +21,28 @@ mypy="mypy --config-file=./setup.cfg"
 .PHONY: benchmark build clean coverage coverage-html-report documentation deploy down flake8 help install mypy pre-commit pylint pypi pypi-test quality tests tests-fail-fast tests-10-slower tests-debug tests-func-cov tests-reports
 
 benchmark: ## Profile unit test
-	@docker-compose run --rm pytest bash -c ${pytest_benchmark}
+	@docker compose run --rm pytest bash -c ${pytest_benchmark}
 build: clean
 	$(info Make: Build service ${service_name})
-	@docker-compose build --compress --force-rm ${service_name}
+	@docker compose build --no-cache ${service_name}
 clean:
-	@docker-compose rm --force -v  ${service_name}
-	@rm -rf *.egg-info build/ dist/ reports/ docs/{environment.pickle,build,source/**/*.doctree}  .mypy_cache .flake8.log
-	@pyclean .
+	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .flake8.log .coverage
+	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 compile: build
 	@docker-compose run --rm pytest bash -c "python setup.py bdist"
 coverage: ## Run coverage => make coverage
-	@docker-compose run --rm pytest bash -c ${pytest_coverage}
+	@docker compose run --rm pytest bash -c ${pytest_coverage}
 coverage-html-report: ## Run coverage html report => make coverage-html-report
-	@docker-compose run --rm pytest bash -c ${pytest_coverage_html_report}
+	@docker compose run --rm pytest bash -c ${pytest_coverage_html_report}
 documentation: ## Build documentation => make documentation
-	@docker-compose run --rm documentation bash -c ${documentation}
-deploy: clean documentation build pypi pypi-test
+	@docker compose run --rm documentation bash -c ${documentation}
+deploy: clean build pypi pypi-test
 	git push
 down: ## Down project containers => make down
 	$(info Make: Down)
-	@docker-compose down
+	@docker compose down
 flake8: ## run flake8 => make flake8
-	@docker-compose run --rm quality bash -c ${flake8}
+	@docker compose run --rm quality bash -c ${flake8}
 generate_changelog: ## generate changelog
 	@docker-compose run --rm generate_changelog bash -c generate-changelog
 help: ## This help dialog. => make help
@@ -53,7 +52,7 @@ help: ## This help dialog. => make help
 	printf "%-30s %s\n" "------" "----" ; \
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 mypy: ## Run mypy on code => make mypy
-	@docker-compose run --rm quality bash -c ${mypy}
+	@docker compose run --rm quality bash -c ${mypy}
 pre-commit: clean ## run localy precommit
 	$(info Make: run pre-commit)
 	@pip install --quiet pre-commit
@@ -61,7 +60,7 @@ pre-commit: clean ## run localy precommit
 	@pre-commit autoupdate --bleeding-edge
 	@pre-commit run --all-files --verbose
 pylint: ## Run pylint on code => make pylint
-	@docker-compose run --rm quality bash -c ${pylint}
+	@docker compose run --rm quality bash -c ${pylint}
 pypi: build
 	python3 -m twine upload dist/*
 pypi-test: build
@@ -71,15 +70,15 @@ quality: ## run pylint, flake8, mypy, and tests => make quality
 	@make -S flake8
 	@make -S mypy
 	@make -S tests
-tests:
-	@docker-compose run --rm pytest bash -c ${pytes}
+tests: ## Run tests => make tests
+	@docker compose run --rm pytest bash -c ${pytest_test_only}
 tests-fail-fast: ## Run tests and stop on first fail => make tests-fail-fast
-	@docker-compose run --rm pytest bash -c ${pytest_test_fail_fast}
+	@docker compose run --rm pytest bash -c ${pytest_test_fail_fast}
 tests-10-slower: ## Run tests and display 10 slowers => make tests-10-slower
-	@docker-compose run --rm pytest bash -c ${pytest_10_slower}
+	@docker compose run --rm pytest bash -c ${pytest_10_slower}
 tests-debug: ## Run tests and launch pdb on first failed => make tests-debug
-	@docker-compose run --rm pytest bash -c ${pytest_debug}
+	@docker compose run --rm pytest bash -c ${pytest_debug}
 tests-func-cov: ## Run tests and display function cov => make tests-func-cov
-	@docker-compose run --rm pytest bash -c ${pytest_func_cov}
+	@docker compose run --rm pytest bash -c ${pytest_func_cov}
 tests-reports: ## Run tests and generate reports => make tests-reports
-	@docker-compose run --rm pytest bash -c ${pytest_reports}
+	@docker compose run --rm pytest bash -c ${pytest_reports}
