@@ -1,136 +1,80 @@
 default_language_version:
-    python: python3.13
+  python: python3.14
 fail_fast: false
-minimum_pre_commit_version: 2.7.1
+minimum_pre_commit_version: 4.1.0
 repos:
-    -   repo: https://github.com/asottile/setup-cfg-fmt
-        rev: v1.6.0
-        hooks:
-            -   id: setup-cfg-fmt
-    -   repo: local
-        hooks:
-            -   id: clean_python
-                name: clean python cache and compiled
-                entry: pyclean .
-                language: system
-            -   id: hadolint
-                name: Valid Dockerfile
-                description: Valid Dockerfile
-                language: docker_image
-                types:
-                    - dockerfile
-                entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL3008 --ignore DL4006 --ignore SC2001 --ignore SC2086 --ignore SC2102 -
-            -   id: generate-changelog
-                name: generate changlog from folder
-                entry: pre-commit-generate-changelog
-                language: system
-                types: [yaml]
-    -   repo: https://github.com/igorshubovych/markdownlint-cli
-        rev: ''
-        hooks:
-            -   id: markdownlint
-    -   repo: https://github.com/pre-commit/mirrors-isort
-        rev: ''
-        hooks:
-        -   id: isort
-    -   repo: https://github.com/psf/black
-        rev: stable
-        hooks:
-        -   id: black
-            language_version: python3.7
-    -   repo: https://github.com/pre-commit/mirrors-mypy
-        rev: 'v2.1.0'
-        hooks:
-        -   id: mypy
-    -   repo: https://github.com/asottile/setup-cfg-fmt
-        rev: 'v1.11.0'
-        hooks:
-            -   id: setup-cfg-fmt
-    -   repo: https://github.com/IamTheFij/docker-pre-commit.git
-        rev: 'v2.0.0'
-        hooks:
-            - id: docker-compose-check
-            - id: hadolint
-              args: [--ignore=DL3013, --ignore=SC2102, --ignore=DL3018, --ignore=DL3008, --ignore=DL4006, --ignore=SC2086]
-#    -   repo: local
-#        hooks:
-#            -   id: generate-changelog
-#                name: generate changlog from folder
-#                entry: pre-commit-generate-changelog
-#                language: system
-#                types: [yaml]
-    -   repo: https://github.com/smian/pre-commit-makefile
-        rev: '261f8fb4b31dfdc05d1a1d7fbde1f1462ecde66d'
-        hooks:
-            -   id: makefile-doc
-                stages: ['manual']
-    -   repo: https://github.com/igorshubovych/markdownlint-cli
-        rev: '5d2a7420e4afe22ec6f93c87dc1f23adb42f0241'
-        hooks:
-            -   id: markdownlint
-                args: ['--fix']
-    -   repo: https://github.com/asottile/pyupgrade
-        rev: 'd9946e8ab925973cd9e338d847cf0ff2a3e227ec'
-        hooks:
-            -   id: pyupgrade
-                args: ['--py3-only', '--py37-plus']
-#    -   repo: https://github.com/asottile/seed-isort-config
-#        rev: v2.1.1
-#        hooks:
-#            -   id: seed-isort-config
-#    -   repo: https://github.com/timothycrosley/isort
-#        rev: 3e09facb2311f5b5b8bff8da90f4992e57f4bc9e
-#        hooks:
-#            -   id: isort
-#                args: ['--settings-path=./setup.cfg']
-    -   repo: https://github.com/psf/black
-        rev: 'c0a8e4224360a6917dcb5d889b08d5fdcfaf7c2d'
-        hooks:
-            -   id: black
-                args: ['--config=./black.toml']
-    -   repo: https://gitlab.com/pycqa/flake8
-        rev: '2c64d3ec5ab3ad40dc3e7c10ee0d7fa22f94560d'
-        hooks:
-            -   id: flake8
-                args: ['--config=./setup.cfg']
-                stages: ['manual']
-    -   repo: https://github.com/pre-commit/mirrors-pylint
-        rev: 'v2.7.4'
-        hooks:
-            -   id: pylint
-                args: ['--rcfile=./setup.cfg']
-                stages: ['manual']
-    -   repo: https://github.com/asottile/dead
-        rev: '9cc664292a0789413a017bbc4f86f4550a6c62bc'
-        hooks:
-            -   id: dead
-                args: ['--files=pre_commit_hook/']
-                stages: ['manual']
-    -   repo: https://github.com/pre-commit/mirrors-mypy
-        rev: 'v2.1.0'
-        hooks:
-            -   id: mypy
-                args: ['--config-file=./setup.cfg']
-                stages: ['manual']
-    -   repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-        rev: '0.1.0'
-        hooks:
-            -   id: yamlfmt
-                stages: ['manual']
-    -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: 'fa6b006f0e53d6c0a4a30d6f7b1200a899444634'
-        hooks:
-            -   id: check-ast
-            -   id: check-case-conflict
-            -   id: check-docstring-first
-            -   id: debug-statements
-            -   id: end-of-file-fixer
-            -   id: fix-encoding-pragma
-                args: [--remove]
-            -   id: mixed-line-ending
-                args: [--fix=lf]
-            -   id: trailing-whitespace
-    -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: 'fa6b006f0e53d6c0a4a30d6f7b1200a899444634'
-        hooks:
-            -   id: check-merge-conflict
+  - repo: local
+    hooks:
+      - id: clean_python
+        name: clean python cache and compiled
+        entry: pyclean .
+        language: system
+        pass_filenames: false
+      - id: hadolint
+        name: Valid Dockerfile
+        description: Lint Dockerfiles with hadolint
+        language: docker_image
+        types:
+          - dockerfile
+        entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore DL3013 --ignore DL3018 --ignore DL4006 --ignore SC2001 --ignore SC2086 --ignore SC2102 -
+      - id: generate-changelog
+        name: generate changelog from folder
+        entry: pre-commit-generate-changelog
+        language: system
+        types:
+          - yaml
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+      - exclude: ^.github/ISSUE_TEMPLATE/
+        id: check-yaml
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: detect-private-key
+      - args:
+          - --branch
+          - main
+        id: no-commit-to-branch
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.48.0
+    hooks:
+      - args:
+          - --fix
+        id: markdownlint
+        stages:
+          - manual
+  - repo: https://github.com/chrysa/pre-commit-tools
+    rev: v0.1.1-93
+    hooks:
+      - exclude: ^(\.github/|workflows/|templates/)
+        id: yaml-sorter
+      - id: json-sorter
+      - id: env-file-check
+      - id: env-example-sync
+      - id: adr-gate
+  # TODO: add detect-duplicated-copilot-instructions after chrysa/pre-commit-tools#163 is merged and released
+  # --- python (all Python repos) ---
+      - id: debugger-detection
+      - id: python-print-detection
+      - id: python-pprint-detection
+        exclude: 'tests?/'
+      - id: no-bare-except
+      - id: python-logger-detection
+      - id: python-unreachable-code
+      - id: no-hardcoded-localhost
+        exclude: 'tests?/|\.test\.|\.spec\.'
+      - id: regression-gate
+        stages: [pre-push]
+      - id: dockerfile-no-latest
+  # --- js/ts (JS/TS repos — remove if not applicable) ---
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [feat, fix, docs, style, refactor, test, chore, perf, revert, ci]
