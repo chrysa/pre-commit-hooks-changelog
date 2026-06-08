@@ -1,3 +1,4 @@
+# makefile-tier: python-app
 .DEFAULT_GOAL := help
 
 pytest_test_only="pytest --new-first --capture=sys"
@@ -18,7 +19,7 @@ pylint_reports="pylint --rcfile=./setup.cfg --exit-zero --score=no --reports=no 
 flake8="flake8 --config=./setup.cfg ./pre_commit_hook"
 mypy="mypy --config-file=./setup.cfg"
 
-.PHONY: benchmark build clean coverage coverage-html-report documentation deploy down flake8 help install mypy pre-commit pylint pypi pypi-test quality tests tests-fail-fast tests-10-slower tests-debug tests-func-cov tests-reports
+.PHONY: benchmark build clean coverage coverage-html-report documentation deploy down flake8 help install mypy pre-commit pylint pypi pypi-test quality test test-cov tests-fail-fast tests-10-slower tests-debug tests-func-cov tests-reports lint format typecheck docker-up docker-down docker-test ci dev
 
 benchmark: ## Profile unit test
 	@docker compose run --rm pytest bash -c ${pytest_benchmark}
@@ -29,7 +30,7 @@ clean:
 	@rm -rf *.egg-info build/ dist/ reports/ .mypy_cache .flake8.log .coverage
 	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 compile: build
-	@docker-compose run --rm pytest bash -c "python setup.py bdist"
+	@docker compose run --rm pytest bash -c "python setup.py bdist"
 coverage: ## Run coverage => make coverage
 	@docker compose run --rm pytest bash -c ${pytest_coverage}
 coverage-html-report: ## Run coverage html report => make coverage-html-report
@@ -44,7 +45,7 @@ down: ## Down project containers => make down
 flake8: ## run flake8 => make flake8
 	@docker compose run --rm quality bash -c ${flake8}
 generate_changelog: ## generate changelog
-	@docker-compose run --rm generate_changelog bash -c generate-changelog
+	@docker compose run --rm generate_changelog bash -c generate-changelog
 help: ## This help dialog. => make help
 	@echo "Hello to the generate changelog Makefile\n"
 	@IFS=$$'\n' ; \
@@ -69,8 +70,8 @@ quality: ## run pylint, flake8, mypy, and tests => make quality
 	@make -S pylint
 	@make -S flake8
 	@make -S mypy
-	@make -S tests
-tests: ## Run tests => make tests
+	@make -S test
+test: ## Run tests => make test
 	@docker compose run --rm pytest bash -c ${pytest_test_only}
 tests-fail-fast: ## Run tests and stop on first fail => make tests-fail-fast
 	@docker compose run --rm pytest bash -c ${pytest_test_fail_fast}
@@ -82,3 +83,17 @@ tests-func-cov: ## Run tests and display function cov => make tests-func-cov
 	@docker compose run --rm pytest bash -c ${pytest_func_cov}
 tests-reports: ## Run tests and generate reports => make tests-reports
 	@docker compose run --rm pytest bash -c ${pytest_reports}
+
+# ── Standard conformance ──────────────────────────────────────────────────────
+install: build  ## Build the Docker test stack (alias)
+lint: flake8  ## Run linter (flake8, alias)
+format:  ## No auto-formatter configured
+	@echo "No auto-formatter configured for this repo."
+typecheck: mypy  ## Run type checking (alias)
+test-cov: coverage  ## Run tests with coverage (alias)
+docker-up:  ## Start docker compose services
+	@docker compose up -d
+docker-down: down  ## Stop docker compose services (alias)
+docker-test: test  ## Run tests in Docker (alias)
+ci: lint typecheck test  ## Run the full local gate (lint + typecheck + test)
+dev: build  ## Build images (no dev server, alias)
