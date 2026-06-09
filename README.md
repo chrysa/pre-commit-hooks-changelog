@@ -1,4 +1,4 @@
-# badges
+# pre-commit-hooks-changelog
 
 |    GENERAL    |
 |---|---|---|---|
@@ -11,41 +11,107 @@
 |:------:|:-------:|
 | ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=master) | ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=develop) |
 
-[Changelog](changelog.md)
+Generate a Markdown `changelog.md` from a folder of small YAML files — one file per release.
 
-## pre-commit-hooks-changelog
+## Why
 
-generate a markdown changelog from folder of yaml files
+Editing a single growing `CHANGELOG.md` by hand causes merge conflicts on every branch. Instead, each release gets its own tiny YAML file. This tool collects them, validates them, and renders a clean Markdown changelog automatically — ideal as a [pre-commit](https://pre-commit.com/) hook so the changelog stays in sync with your sources.
 
-### Using pre-commit-hooks-changelog with pre-commit
+## Who it's for
 
-Add this to your `.pre-commit-config.yaml`
+Project maintainers who want a conflict-free, reviewable changelog workflow driven by per-version files committed alongside the code.
 
-    -   repo: https://github.com/chrysa/pre-commit-hooks-changelog
-        rev: v0.2.0  # Use the ref you want to point at
-        hooks:
-        -   id: generate-changelog
+## Features
 
-### Options
+- **One file per version** — keep `changelog/v1.2.0.yaml` next to your work, no shared file to conflict on.
+- **Validated entries** — only supported section keys are accepted; an unknown key fails the run with a clear error.
+- **Automatic on commit** — runs as a pre-commit hook whenever a changelog YAML changes.
+- **Rebuild modes** — regenerate everything, per-version, or just the latest from scratch.
+- **Archives + history** — older versions are linked from the root changelog under a `History` section.
 
-|   |   |
+## Installation
+
+Standalone via PyPI:
+
+```bash
+pip install pre-commit-hooks-changelog
+```
+
+This installs the `generate-changelog` console script.
+
+## Usage
+
+### 1. Write per-version YAML files
+
+Put one file per release in a `changelog/` folder, e.g. `changelog/v0.2.0.yaml`:
+
+```yaml
+added:
+    - markdown linter in pre-commit cycle
+    - rebuild argument
+
+fixed:
+    - mypy error
+
+todo:
+    - add unit tests
+```
+
+Supported section keys (any other key fails validation):
+
+`added`, `blocked`, `fixed`, `in progress`, `modified`, `removed`, `todo`, `upgraded`, `unreleased`
+
+Files are ordered by filename, so name them so they sort chronologically (e.g. `v0.1.0.yaml`, `v0.2.0.yaml`).
+
+### 2. Generate
+
+```bash
+generate-changelog
+```
+
+This reads `changelog/*.yaml` and writes `changelog.md` at the repo root, with older versions linked under a `History` section pointing to `changelog/archives/`.
+
+### As a pre-commit hook
+
+Add this to your `.pre-commit-config.yaml`:
+
+```yaml
+-   repo: https://github.com/chrysa/pre-commit-hooks-changelog
+    rev: v0.2.0  # use the tag you want to pin
+    hooks:
+    -   id: generate-changelog
+```
+
+The hook (id `generate-changelog`) runs on the `commit`, `push`, and `manual` stages whenever a staged file matches `changelog/**.yaml`.
+
+## Options
+
+| Flag | Default | Description |
+|---|---|---|
+| `--output-file` | `changelog.md` | Output changelog file |
+| `--changelog-folder` | `changelog` | Source folder of changelog YAML files |
+| `--rebuild` | _(none)_ | Rebuild mode — see below |
+
+`--rebuild` accepts one of:
+
+| Value | Effect |
 |---|---|
-| `--output-file` | define changelog outpout |
-| `--changelog-folder` | source folder of changelogs |
-| `--rebuild` | rebuild changelog see below |
+| `all` | Rebuild the whole changelog from scratch |
+| `versions` | Rebuild the per-version files |
+| `latest` | Rebuild only the latest version |
+| `home` | Rebuild the changelog file at the repo root |
 
-#### Rebuild options
+Example:
 
-|   |   |
-|---|---|
-| `all` | rebuild changelog from scratch |
-| `versions` | rebuild changelog for each version |
-| `latest` | rebuild latest changelog |
-| `home` | rebuild changelog file on repo root |
+```bash
+generate-changelog --changelog-folder changelog --output-file changelog.md --rebuild all
+```
 
-### Standalone
+## Documentation
 
-`pip install pre-commit-hooks-changelog`
+- [Changelog](changelog.md)
+- [Contributing](CONTRIBUTING.md)
+- Sphinx docs config in [`docs/`](docs/)
 
 <!-- START makefile-doc -->
 ```
