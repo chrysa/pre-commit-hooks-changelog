@@ -16,9 +16,9 @@ repos:
     language: docker_image
     types:
     - dockerfile
-    entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 
-      --ignore DL3013 --ignore DL3018 --ignore DL4006 --ignore SC2001 --ignore 
-      SC2086 --ignore SC2102 -
+    entry: --entrypoint /bin/hadolint hadolint/hadolint:latest --ignore DL3008 --ignore
+      DL3013 --ignore DL3018 --ignore DL4006 --ignore SC2001 --ignore SC2086 --ignore
+      SC2102 -
   - id: generate-changelog
     name: generate changelog from folder
     entry: pre-commit-generate-changelog
@@ -47,7 +47,7 @@ repos:
     stages:
     - manual
 - repo: https://github.com/chrysa/pre-commit-tools
-  rev: v0.1.1-94
+  rev: v0.1.1-95
   hooks:
   - id: makefile-check
   - exclude: ^(\.github/|workflows/|templates/)
