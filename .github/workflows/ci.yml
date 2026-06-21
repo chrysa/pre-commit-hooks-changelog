@@ -74,9 +74,9 @@ jobs:
                   python-version: "3.14"
                   sonar-token: ${{ secrets.SONAR_TOKEN }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
-                  project-key: chrysa_pre-commit-hooks-changelog
+                  project-key: chrysa_target
                   organization: chrysa
-                  project-name: pre-commit-hooks-changelog
-                  sources: changelog,helper,pre_commit_hook
+                  project-name: target
+                  sources: .
                   tests: tests
                   coverage-report: coverage.xml
