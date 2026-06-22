@@ -1,6 +1,5 @@
 fixed:
-    - compare file content for skipped
-
+- compare file content for skipped
 todo:
-    - refacto
-    - add unit tests
+- add unit tests
+- refacto

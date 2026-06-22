@@ -1,14 +1,11 @@
 added:
-    - makefile
-    - deploy on pypi
-
+- deploy on pypi
+- makefile
 fixed:
-    - auto skipped files
-    - file compare error
-    - push changelog folder
-
+- auto skipped files
+- file compare error
+- push changelog folder
 modified:
-    - pre-commit flow
-
+- pre-commit flow
 todo:
-    - rework all
+- rework all
