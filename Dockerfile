@@ -3,16 +3,13 @@ COPY . /src
 WORKDIR /src
 RUN pip install --quiet --upgrade pip
 
-<<<<<<< HEAD
 FROM base AS application
+# Editable install so coverage records repo-relative paths (pre_commit_hook/...)
+# instead of site-packages paths, which SonarCloud cannot map to source files.
 RUN pip install --quiet --editable .
-=======
-RUN set -x \
- && pip install -e .[pre_commit,push,tests]
->>>>>>> master
 
 FROM application AS pytest
-RUN pip install --quiet .[tests]
+RUN pip install --quiet -e ".[tests]"
 
 FROM application AS documentation
 RUN pip install --quiet .[documentation]
