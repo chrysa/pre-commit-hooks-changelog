@@ -51,6 +51,8 @@ services:
         volumes:
             - *default-app-volume-app
             - ./tests:/src/tests
+            # Surface coverage.xml on the host so CI can upload it to SonarCloud.
+            - ./coverage.xml:/src/coverage.xml
     quality:
         <<: *default-app
         image: generate_changelog_quality:1.0.0

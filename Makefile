@@ -94,6 +94,13 @@ test-cov: coverage  ## Run tests with coverage (alias)
 docker-up:  ## Start docker compose services
 	@docker compose up -d
 docker-down: down  ## Stop docker compose services (alias)
-docker-test: test  ## Run tests in Docker (alias)
+docker-test: ## Run tests with coverage in Docker; surfaces coverage.xml on host for CI
+	@# Pre-create coverage.xml as a file so the bind-mount maps file->file
+	@# (Docker auto-creates a *directory* for a missing bind source, which
+	@# then makes coverage's open(path,"w") fail). -T disables the pseudo-TTY
+	@# so this also runs in CI / non-interactive contexts.
+	@rm -rf coverage.xml
+	@touch coverage.xml
+	@docker compose run --rm -T pytest bash -c "pytest --cov=pre_commit_hook --cov-branch --cov-config=./setup.cfg --cov-report xml:./coverage.xml --new-first --capture=sys"
 ci: lint typecheck test  ## Run the full local gate (lint + typecheck + test)
 dev: build  ## Build images (no dev server, alias)
