@@ -6,8 +6,8 @@
 #   pre_commit_hook      import package / source dir       (e.g. django_pytest)
 #   pre_commit_hook tests      ruff sources, space-separated     (e.g. "django_pytest tests")
 #   tests        test dir                          (e.g. tests)
-#   target    repo name                         (e.g. django-pytest)
-#   chrysa_target  SonarCloud project key            (e.g. chrysa_django-pytest)
+#   pre-commit-hooks-changelog    repo name                         (e.g. django-pytest)
+#   chrysa_pre-commit-hooks-changelog  SonarCloud project key            (e.g. chrysa_django-pytest)
 #
 # ⚠️ This file lives in workflows/ (NOT .github/workflows/) — it is a copy-to-use
 #    template, not a reusable `uses:` workflow.
@@ -77,6 +77,6 @@ jobs:
                   project-key: chrysa_pre-commit-hooks-changelog
                   organization: chrysa
                   project-name: pre-commit-hooks-changelog
-                  sources: changelog,helper,pre_commit_hook
+                  sources: pre_commit_hook
                   tests: tests
                   coverage-report: coverage.xml
