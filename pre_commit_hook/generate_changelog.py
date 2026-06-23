@@ -78,7 +78,7 @@ class Collect:
                     )
 
 
-def main() -> int:
+def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate a Markdown changelog from YAML files.")
     parser.add_argument("filenames", nargs="*")
     parser.add_argument(
@@ -103,23 +103,31 @@ def main() -> int:
         help="rebuild changelog",
         choices=AVAILABLE_REBUILD_OPTION,
     )
-    parsed_args: argparse.Namespace = parser.parse_args()
-    collect_version = Collect(
-        changelog_folder=parsed_args.changelog_folder,
-        changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE,
-        main_output_file=parsed_args.output_file,
-    )
-    collect_version.collect_versions()
-    if not collect_version.content:
+    return parser.parse_args()
+
+
+def main() -> int:
+    try:
+        parsed_args = _parse_args()
+        collect_version = Collect(
+            changelog_folder=parsed_args.changelog_folder,
+            changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE,
+            main_output_file=parsed_args.output_file,
+        )
+        collect_version.collect_versions()
+        if not collect_version.content:
+            return 0
+        formatter = Formatter(changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)
+        formatter.generate(
+            archives_path=collect_version.changelog_folder_archive_path,
+            changelog_path=collect_version.changelog_path,
+            content_dict=collect_version.content,
+            rebuild=parsed_args.rebuild,
+        )
         return 0
-    formatter = Formatter(changelog_entry_available=CHANGELOG_ENTRY_AVAILABLE)
-    formatter.generate(
-        archives_path=collect_version.changelog_folder_archive_path,
-        changelog_path=collect_version.changelog_path,
-        content_dict=collect_version.content,
-        rebuild=parsed_args.rebuild,
-    )
-    return 0
+    except (NotADirectoryError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
