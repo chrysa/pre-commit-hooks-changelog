@@ -1,14 +1,10 @@
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
 
 
 @dataclass
 class Helper:
-    changelog_entry_available: List[str] = field(default_factory=list)
+    changelog_entry_available: list[str] = field(default_factory=list)
     level: int = 1
     content: str = ""
 
@@ -16,7 +12,7 @@ class Helper:
         self.level += 1
         return f"# {value.title()}\n\n"
 
-    def add_header(self, value: str, level: int = None, empty_lines: int = 2) -> Optional[str]:
+    def add_header(self, value: str, level: int | None = None, empty_lines: int = 2) -> str | None:
         if level is not None:
             self.level = level
         content = f"{'#' * self.level} {value.title()}"
@@ -32,7 +28,7 @@ class Helper:
         self.content += f"{value}\n"
 
     @staticmethod
-    def add_unordered_list(value: List[str]) -> str:
+    def add_unordered_list(value: list[str]) -> str:
         content = "\n"
         for item in value:
             if isinstance(item, str):
@@ -43,7 +39,7 @@ class Helper:
 
     def gen_content(
         self,
-        content: Union[str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]],
+        content: str | list[str] | dict[str, dict[str, list[str]]] | dict[str, list[str]],
     ) -> str:
         if isinstance(content, str):
             if content in self.changelog_entry_available:

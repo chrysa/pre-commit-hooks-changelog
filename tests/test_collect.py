@@ -1,8 +1,7 @@
 import pytest
-from pathlib import Path
 
-from pre_commit_hook.generate_changelog import Collect
 from pre_commit_hook.generate_changelog import CHANGELOG_ENTRY_AVAILABLE
+from pre_commit_hook.generate_changelog import Collect
 
 
 class TestCollectPaths:

@@ -1,10 +1,11 @@
-import pathlib
 import argparse
-from typing import Dict, List, Optional
+import pathlib
+from dataclasses import dataclass
+from dataclasses import field
 from pathlib import Path
-from dataclasses import field, dataclass
 
 import ruamel.yaml
+
 
 yaml = ruamel.yaml.YAML(typ="safe")
 
@@ -12,13 +13,13 @@ yaml = ruamel.yaml.YAML(typ="safe")
 @dataclass(init=True)
 class Changelog:
     args: argparse.Namespace
-    chang: Dict[str, List[str]] = field(default_factory=dict)
-    changelog_content: Dict[str, Dict[str, List[str]]] = field(default_factory=dict)
+    chang: dict[str, list[str]] = field(default_factory=dict)
+    changelog_content: dict[str, dict[str, list[str]]] = field(default_factory=dict)
     project_path: pathlib.Path = Path().absolute()
-    changelog_entry_available: List[str] = field(default_factory=list)
+    changelog_entry_available: list[str] = field(default_factory=list)
 
     @property
-    def changelog_folder_path(self) -> Optional[pathlib.PosixPath]:
+    def changelog_folder_path(self) -> pathlib.PosixPath | None:
         path = self.project_path / self.args.changelog_folder
         if not path.exists():
             raise NotADirectoryError(f"{path}")
@@ -40,9 +41,7 @@ class Changelog:
 
     def validate_file(self, file_name: str) -> None:
         chang_keys = self.chang.keys()
-        if not set([x.lower() for x in chang_keys]).issubset(
-            self.changelog_entry_available
-        ):
+        if not {x.lower() for x in chang_keys}.issubset(self.changelog_entry_available):
             for key in chang_keys:
                 if key not in self.changelog_entry_available:
                     raise Exception(

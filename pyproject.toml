@@ -1,3 +1,38 @@
 [build-system]
 requires = ["setuptools>=82.0.1", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py313"
+extend-exclude = [".pytest_cache/*", "*.egg-info/*", ".ruff_cache/*", "docs"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "ANN", "ARG"]
+ignore = ["E501", "ANN401"]
+fixable = ["ALL"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "ARG", "N802", "N803"]
+"setup.py" = ["ANN"]
+"docs/*" = ["ANN", "ARG"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+force-single-line = true
+lines-after-imports = 2
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+ignore_missing_imports = true
+explicit_package_bases = true
+namespace_packages = true
+# Legacy flat-layout duplicate modules kept for back-compat; the canonical package is pre_commit_hook/.
+files = ["pre_commit_hook"]
+exclude = ["docs/", "build/"]
