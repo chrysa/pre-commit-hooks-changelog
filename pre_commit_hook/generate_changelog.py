@@ -3,13 +3,11 @@ import sys
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
-from typing import Dict
-from typing import List
-from typing import Optional
 
 import ruamel.yaml
 
 from .formatter import Formatter
+
 
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
@@ -33,14 +31,14 @@ class Collect:
     archives_path: str = "archives"
     main_output_file: str = "changelog.md"
     changelog_folder: str = "changelog"
-    chang: Dict[str, List[str]] = field(default_factory=dict)
+    chang: dict[str, list[str]] = field(default_factory=dict)
     extension: str = "yaml"
     project_path: Path = field(default_factory=lambda: Path().absolute())
-    content: Dict[str, Dict[str, List[str]]] = field(default_factory=dict)
-    changelog_entry_available: List[str] = field(default_factory=list)
+    content: dict[str, dict[str, list[str]]] = field(default_factory=dict)
+    changelog_entry_available: list[str] = field(default_factory=list)
 
     @property
-    def changelog_folder_path(self) -> Optional[Path]:
+    def changelog_folder_path(self) -> Path:
         path = self.project_path / self.changelog_folder
         if not path.exists():
             raise NotADirectoryError(f"{path}")
@@ -55,7 +53,7 @@ class Collect:
         return self.project_path / self.main_output_file
 
     @property
-    def versions_files(self) -> List[Path]:
+    def versions_files(self) -> list[Path]:
         return sorted(
             self.changelog_folder_path.glob(f"*.{self.extension}"),
             key=lambda p: p.stem,

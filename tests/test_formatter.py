@@ -1,5 +1,4 @@
 import pytest
-from pathlib import Path
 
 from pre_commit_hook.formatter import Formatter
 from pre_commit_hook.generate_changelog import CHANGELOG_ENTRY_AVAILABLE
@@ -103,9 +102,7 @@ class TestFormatterVersionContent:
         content = changelog.read_text()
         assert "History" in content
 
-    def test_home_changelog_no_history_for_single_version(
-        self, tmp_path, formatter, single_version_content
-    ):
+    def test_home_changelog_no_history_for_single_version(self, tmp_path, formatter, single_version_content):
         archives = tmp_path / "archives"
         changelog = tmp_path / "changelog.md"
         formatter.generate(
@@ -157,9 +154,7 @@ class TestFormatterRebuildAll:
 
 
 class TestFormatterRebuildVersions:
-    def test_rebuild_versions_creates_archives_only(
-        self, tmp_path, formatter, multi_version_content
-    ):
+    def test_rebuild_versions_creates_archives_only(self, tmp_path, formatter, multi_version_content):
         archives = tmp_path / "archives"
         changelog = tmp_path / "changelog.md"
         formatter.generate(
@@ -174,9 +169,7 @@ class TestFormatterRebuildVersions:
 
 
 class TestFormatterRebuildLatest:
-    def test_rebuild_latest_creates_latest_archive(
-        self, tmp_path, formatter, multi_version_content
-    ):
+    def test_rebuild_latest_creates_latest_archive(self, tmp_path, formatter, multi_version_content):
         archives = tmp_path / "archives"
         changelog = tmp_path / "changelog.md"
         formatter.generate(

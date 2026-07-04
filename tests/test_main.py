@@ -1,8 +1,4 @@
-import sys
 from pathlib import Path
-from unittest.mock import patch
-
-import pytest
 
 from pre_commit_hook.generate_changelog import main
 
