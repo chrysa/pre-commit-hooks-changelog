@@ -5,6 +5,17 @@ x-app: &default-app
         dockerfile: Dockerfile
         cache_from:
             - &default-app-python-cache python:3.8-alpine
+    # Run bind-mount containers as the host user so tool output written into the
+    # mounted tree is owned by the developer, never root (chrysa artifact isolation).
+    user: "${UID:-1000}:${GID:-1000}"
+    # Keep every tool cache out of the mounted source tree and give a writable HOME.
+    environment:
+        HOME: /tmp
+        PYTHONPYCACHEPREFIX: /tmp/.toolcache/pycache
+        RUFF_CACHE_DIR: /tmp/.toolcache/ruff
+        MYPY_CACHE_DIR: /tmp/.toolcache/mypy
+        PYTEST_ADDOPTS: -p no:cacheprovider
+        COVERAGE_FILE: /tmp/.coverage
     command: bash
     volumes:
         - &default-app-volume-app ./pre_commit_hook:/src/pre_commit_hook
