@@ -1,91 +1,38 @@
-# CLAUDE.md — [PROJECT_NAME]
+# CLAUDE.md — pre-commit-hooks-changelog
 
-> Replace [PROJECT_NAME] and all [PLACEHOLDER] values before committing.
-> @[claude-sonnet-4-6]
-
-> **Claude Code**: at session start, read `primer.md` FIRST (current state), then this file (conventions).
-> Also read `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` for code specifications.
+> **Claude Code**: also read `.github/copilot-instructions.md` for code specifications.
 
 ## Project
 
-**Name:** [PROJECT_NAME]
-**Stack:** [Python 3.14 / Node.js LTS / React / ...]
-**Purpose:** [One sentence description]
-
-## Conventions
-
-- Language: English — all code, comments, documentation, instructions, and configuration files must be in English.
-- Commits: Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`)
-- Branch naming: `feature/`, `bugfix/`, `chore/`, `hotfix/`, `release/`
-- Default branch: `develop`
-
-## Standards
-
-- Max function lines: 50
-- Max file lines: 500
-- Max complexity (heuristic): 10
-- Lint warnings: 0
-- Test coverage: [X]%
-
-## Session Workflow
-
-| Step | Command | When |
-|------|---------|------|
-| Start session | `make prepare` or `/prepare` | Always — loads primer + git context |
-| End session | `make hindsight` or `/hindsight` | Always — updates primer + memory |
-| Init memory | `make memory-init` | Once per repo |
-| Export to Obsidian | `make hindsight OBSIDIAN=<path>` | Optional |
-
-**Files:**
-- `primer.md` — current state, next actions, blockers (read before CLAUDE.md)
-- `.claude/memory/` — session, decisions, known-issues, progress (not committed except progress/decisions)
+- **Stack:** Python (>= 3.10), Sphinx docs; published to PyPI as `pre_commit_hooks_changelog`
+- **Purpose:** Generate a Markdown `Changelog.md` from a folder of YAML files; usable as a
+  pre-commit hook.
 
 ## Setup
 
 ```bash
 make install             # Install dependencies
-make memory-init         # Initialize primer.md + .claude/memory/
 make lint                # Run linter
 make test                # Run tests
-make build               # Build (if applicable)
+make generate_changelog  # Build Changelog.md from the changelog/ YAML files
+make build               # Build the package
 codegraph init --index . # Build CodeGraph index (run once, never commit .codegraph/)
-/graphify                # Build knowledge graph (run once or /graphify --update; never commit graphify-out/)
 ```
 
 ## CI
 
-- CI runs on push to `develop`/`main` and on PRs to those branches
-- CI must pass before merging
-- SonarQube analysis is configured in CI (not via sonar-project.properties)
-
-## Repository-specific rules
-
-[Add project-specific rules here. E.g.:]
-- [ ] Describe any project-specific allowlists for secret scanner
-- [ ] Describe custom thresholds vs shared defaults
-- [ ] Note any hooks that are disabled for this repo and why
-
-## Model-specific notes (@[claude-sonnet-4-6])
-
-[Add any rules or instructions that apply only when using a specific model.]
-
-## Skills
-
-Shared skills from `shared-standards/.claude/skills/`:
-- `testing-pytest/SKILL.md` — pytest DDD + pytest-mock + constants (load when writing tests)
-- `dockerfile-multistage/SKILL.md` — 4-stage Python 3.14 containers (load when editing Dockerfile)
-- `api-design/SKILL.md` — REST standards + FastAPI patterns (load when designing endpoints)
-- `ui-ux/SKILL.md` — UX/UI/ergonomics across ALL surfaces (web, CLI, VS Code, Discord, desktop, game, agent) + WCAG 2.1 AA + dark mode + i18n FR+EN (load when building any human-facing surface)
+- Runs on push to `develop`/`master` and on PRs to those branches; CI must pass before merging.
+- SonarQube analysis is configured in CI (not via `sonar-project.properties`).
 
 ## graphify
 
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+Knowledge graph at `graphify-out/`. For codebase questions, prefer `graphify query "<q>"`
+(needs `graphify-out/graph.json`); use `graphify path "<A>" "<B>"` for relationships and
+`graphify explain "<concept>"` for concepts — each returns a scoped subgraph smaller than raw
+grep. Use `graphify-out/wiki/index.md` for broad navigation, and `graphify-out/GRAPH_REPORT.md`
+only for full architecture review. After changing code, run `graphify update .` (AST-only, no
+API cost).
 
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 
 
 <!-- chrysa:standards:start · managed by distribute-standards.sh · DO NOT EDIT -->
