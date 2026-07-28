@@ -1,9 +1,10 @@
-import sys
 import argparse
-from typing import Optional, Sequence
+import sys
+from collections.abc import Sequence
 
-from formater import Formatter
 from changelog import Changelog
+from formater import Formatter
+
 
 CHANGELOG_ENTRY_AVAILABLE = [
     "added",
@@ -19,7 +20,7 @@ CHANGELOG_ENTRY_AVAILABLE = [
 AVAILABLE_REBUILD_OPTION = ["all", "versions", "latest", "home"]
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("filenames", nargs="*")
     parser.add_argument(
@@ -37,7 +38,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="source folder of changelogs",
     )
     parser.add_argument(
-        "--rebuild", type=str, dest="rebuild", default=None, help="rebuild changelog",
+        "--rebuild",
+        type=str,
+        dest="rebuild",
+        default=None,
+        help="rebuild changelog",
     )
     args = parser.parse_args(argv)
     if args.rebuild:

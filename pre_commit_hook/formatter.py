@@ -1,16 +1,13 @@
 import pathlib
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Dict
-from typing import List
-from typing import Optional
 
 from .helper import Helper
 
 
 @dataclass
 class Formatter:
-    changelog_entry_available: List[str] = field(default_factory=list)
+    changelog_entry_available: list[str] = field(default_factory=list)
     content: str = ""
 
     def _new_helper(self) -> Helper:
@@ -20,8 +17,8 @@ class Formatter:
         self,
         archives_path: pathlib.Path,
         changelog_path: pathlib.Path,
-        content_dict: Dict[str, Dict[str, List[str]]],
-        rebuild: Optional[str] = None,
+        content_dict: dict[str, dict[str, list[str]]],
+        rebuild: str | None = None,
     ) -> None:
         if rebuild == "all":
             self.remove_home_changelog(changelog_path=changelog_path)
@@ -62,7 +59,7 @@ class Formatter:
     def remove_latest(
         self,
         archives_path: pathlib.Path,
-        content_dict: Dict[str, Dict[str, List[str]]],
+        content_dict: dict[str, dict[str, list[str]]],
     ) -> None:
         latest_version = list(content_dict.keys())[-1]
         self.remove_version(archives_path=archives_path, version=latest_version)
@@ -70,7 +67,7 @@ class Formatter:
     def generate_latest(
         self,
         archives_path: pathlib.Path,
-        content_dict: Dict[str, Dict[str, List[str]]],
+        content_dict: dict[str, dict[str, list[str]]],
     ) -> None:
         latest_version = list(content_dict.keys())[-1]
         self.generate_version(
@@ -83,7 +80,7 @@ class Formatter:
         self,
         archives_path: pathlib.Path,
         version: str,
-        version_data: Dict[str, List[str]],
+        version_data: dict[str, list[str]],
     ) -> None:
         helper = self._new_helper()
         version_title = version.replace(".yaml", "").replace(".yml", "")
@@ -100,7 +97,7 @@ class Formatter:
     def generate_versions(
         self,
         archives_path: pathlib.Path,
-        content_dict: Dict[str, Dict[str, List[str]]],
+        content_dict: dict[str, dict[str, list[str]]],
     ) -> None:
         for version, version_data in content_dict.items():
             self.generate_version(
@@ -113,7 +110,7 @@ class Formatter:
         self,
         archives_path: pathlib.Path,
         changelog_path: pathlib.Path,
-        content_dict: Dict[str, Dict[str, List[str]]],
+        content_dict: dict[str, dict[str, list[str]]],
     ) -> None:
         latest_version = list(content_dict.keys())[-1]
         latest_version_title = latest_version.replace(".yaml", "").replace(".yml", "")
@@ -128,7 +125,9 @@ class Formatter:
             if history:
                 self._remove_trailing_newlines(keep=2)
                 history_helper = self._new_helper()
-                self.content += history_helper.add_header(value="History", level=2, empty_lines=3)
+                history_header = history_helper.add_header(value="History", level=2, empty_lines=3)
+                if history_header is not None:
+                    self.content += history_header
                 self.content += history
         self.save(changelog_path=changelog_path, archives_path=archives_path)
 

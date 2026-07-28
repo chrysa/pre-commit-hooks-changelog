@@ -1,7 +1,7 @@
 import pytest
 
-from pre_commit_hook.helper import Helper
 from pre_commit_hook.generate_changelog import CHANGELOG_ENTRY_AVAILABLE
+from pre_commit_hook.helper import Helper
 
 
 @pytest.fixture

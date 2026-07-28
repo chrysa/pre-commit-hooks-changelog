@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
-      - uses: chrysa/github-actions/sonar-scan-python@v1.2.1
+      - uses: chrysa/github-actions/sonar-scan-python@v1.3.0
         with:
           python-version: "3.14"
           sonar-token: ${{ secrets.SONAR_TOKEN }}
