@@ -24,6 +24,8 @@ select = [
     "C90",  # mccabe complexity
     "PL",   # pylint
     "RUF",  # ruff-specific rules
+    "PERF203",
+    "PERF401",
 ]
 ignore = [
     "E203",   # whitespace before ':'
