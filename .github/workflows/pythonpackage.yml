@@ -21,11 +21,22 @@ permissions:
     pull-requests: write
     statuses: write
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
     # ── Versioning ─────────────────────────────────────────────────────────────
     versioning:
         name: GitVersion
         runs-on: ubuntu-latest
+        timeout-minutes: 30
+        timeout-minutes: 30
+        timeout-minutes: 30
+        timeout-minutes: 30
+        timeout-minutes: 30
+        timeout-minutes: 30
+        timeout-minutes: 30
         outputs:
             semver: ${{ steps.gv.outputs.semVer }}
             full-semver: ${{ steps.gv.outputs.fullSemVer }}
