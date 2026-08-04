@@ -1,6 +1,7 @@
 import pathlib
 from dataclasses import dataclass
 from dataclasses import field
+from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -23,41 +24,77 @@ class Formatter:
         content_dict: Dict[str, Dict[str, List[str]]],
         rebuild: Optional[str] = None,
     ) -> None:
-        if rebuild == "all":
-            self.remove_home_changelog(changelog_path=changelog_path)
-            self.remove_archives(archives_path=archives_path)
-            self.generate_versions(content_dict=content_dict, archives_path=archives_path)
-            self.generate_home_changelog(
-                content_dict=content_dict,
-                changelog_path=changelog_path,
-                archives_path=archives_path,
-            )
-        elif rebuild == "versions":
-            self.remove_archives(archives_path=archives_path)
-            self.generate_versions(content_dict=content_dict, archives_path=archives_path)
-        elif rebuild == "latest":
-            self.remove_latest(content_dict=content_dict, archives_path=archives_path)
-            self.generate_latest(content_dict=content_dict, archives_path=archives_path)
-            self.remove_home_changelog(changelog_path=changelog_path)
-            self.generate_home_changelog(
-                content_dict=content_dict,
-                changelog_path=changelog_path,
-                archives_path=archives_path,
-            )
-        elif rebuild == "home":
-            self.remove_home_changelog(changelog_path=changelog_path)
-            self.generate_home_changelog(
-                content_dict=content_dict,
-                changelog_path=changelog_path,
-                archives_path=archives_path,
-            )
-        else:
-            self.generate_versions(content_dict=content_dict, archives_path=archives_path)
-            self.generate_home_changelog(
-                content_dict=content_dict,
-                changelog_path=changelog_path,
-                archives_path=archives_path,
-            )
+        """Run the rebuild strategy named by `rebuild`, defaulting to a plain generate."""
+        strategy = _REBUILD_STRATEGIES.get(rebuild or "", Formatter._rebuild_default)
+        strategy(
+            self,
+            archives_path=archives_path,
+            changelog_path=changelog_path,
+            content_dict=content_dict,
+        )
+
+    def _rebuild_all(
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
+        self.remove_home_changelog(changelog_path=changelog_path)
+        self.remove_archives(archives_path=archives_path)
+        self._rebuild_default(
+            archives_path=archives_path,
+            changelog_path=changelog_path,
+            content_dict=content_dict,
+        )
+
+    def _rebuild_default(
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
+        self.generate_versions(content_dict=content_dict, archives_path=archives_path)
+        self.generate_home_changelog(
+            content_dict=content_dict,
+            changelog_path=changelog_path,
+            archives_path=archives_path,
+        )
+
+    def _rebuild_home(
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
+        self.remove_home_changelog(changelog_path=changelog_path)
+        self.generate_home_changelog(
+            content_dict=content_dict,
+            changelog_path=changelog_path,
+            archives_path=archives_path,
+        )
+
+    def _rebuild_latest(
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
+        self.remove_latest(content_dict=content_dict, archives_path=archives_path)
+        self.generate_latest(content_dict=content_dict, archives_path=archives_path)
+        self._rebuild_home(
+            archives_path=archives_path,
+            changelog_path=changelog_path,
+            content_dict=content_dict,
+        )
+
+    def _rebuild_versions(
+        self,
+        archives_path: pathlib.Path,
+        changelog_path: pathlib.Path,
+        content_dict: Dict[str, Dict[str, List[str]]],
+    ) -> None:
+        self.remove_archives(archives_path=archives_path)
+        self.generate_versions(content_dict=content_dict, archives_path=archives_path)
 
     def remove_latest(
         self,
@@ -202,3 +239,12 @@ class Formatter:
             self.write_file(changelog_path=changelog_path, status="\33[33mUPDATED\33[37m")
         else:
             print(f"{changelog_path} [\33[34mSKIPPED\33[37m]")
+
+
+# rebuild mode -> strategy. A new mode is a new row, never a new branch in generate().
+_REBUILD_STRATEGIES: Dict[str, Callable[..., None]] = {
+    "all": Formatter._rebuild_all,
+    "home": Formatter._rebuild_home,
+    "latest": Formatter._rebuild_latest,
+    "versions": Formatter._rebuild_versions,
+}
