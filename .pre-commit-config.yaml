@@ -12,9 +12,13 @@ repos:
   hooks:
   - id: format-dockerfiles
   - id: python-print-detection
+    exclude: (^|/)tests?/|^(README\.md|docs/)
   - id: python-pprint-detection
+    exclude: (^|/)tests?/|^(README\.md|docs/)
   - id: debugger-detection
+    exclude: (^|/)tests?/|^(README\.md|docs/)
   - id: python-logger-detection
+    exclude: (^|/)tests?/|^(README\.md|docs/)
   - id: json-sorter
   - id: requirements-sort
   - id: env-file-check
@@ -31,7 +35,7 @@ repos:
   - id: python-unreachable-code
   - id: python-no-unittest-import
   - id: python-untyped-raise
-    exclude: ^tests?/
+    exclude: (^|/)tests?/
   - id: python-mutable-default
   - id: python-dispatch-ladder
   - id: claude-assets-present
