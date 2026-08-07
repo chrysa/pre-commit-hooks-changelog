@@ -1,14 +1,12 @@
-from dataclasses import dataclass
-from dataclasses import field
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
+from dataclasses import dataclass, field
+from typing import ClassVar, Optional, Union
 
 
 @dataclass
 class Helper:
-    changelog_entry_available: List[str] = field(default_factory=list)
+    MAX_HEADER_LEVEL: ClassVar[int] = 6
+
+    changelog_entry_available: list[str] = field(default_factory=list)
     level: int = 1
     content: str = ""
 
@@ -16,7 +14,7 @@ class Helper:
         self.level += 1
         return f"# {value.title()}\n\n"
 
-    def add_header(self, value: str, level: int = None, empty_lines: int = 2) -> Optional[str]:
+    def add_header(self, value: str, level: Optional[int] = None, empty_lines: int = 2) -> Optional[str]:
         if level is not None:
             self.level = level
         content = f"{'#' * self.level} {value.title()}"
@@ -32,7 +30,7 @@ class Helper:
         self.content += f"{value}\n"
 
     @staticmethod
-    def add_unordered_list(value: List[str]) -> str:
+    def add_unordered_list(value: list[str]) -> str:
         content = "\n"
         for item in value:
             if isinstance(item, str):
@@ -43,7 +41,7 @@ class Helper:
 
     def gen_content(
         self,
-        content: Union[str, List[str], Dict[str, Dict[str, List[str]]], Dict[str, List[str]]],
+        content: Union[str, list[str], dict[str, dict[str, list[str]]], dict[str, list[str]]],
     ) -> str:
         if isinstance(content, str):
             if content in self.changelog_entry_available:
@@ -54,8 +52,8 @@ class Helper:
             self.content += self.add_unordered_list(value=content)
         elif isinstance(content, dict):
             for key, value in content.items():
-                if self.level > 6:
-                    raise ValueError(f"only 6 header levels available, got level {self.level}")
+                if self.level > self.MAX_HEADER_LEVEL:
+                    raise ValueError(f"only {self.MAX_HEADER_LEVEL} header levels available, got level {self.level}")
                 elif key in self.changelog_entry_available:
                     self.level = 2
                     self.gen_content(content=key)
