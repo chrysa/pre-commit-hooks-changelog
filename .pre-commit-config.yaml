@@ -114,7 +114,7 @@ repos:
     - revert
     - ci
 - repo: https://github.com/chrysa/guideline-checker
-  rev: v1.31.0-13
+  rev: v1.31.0-14
   hooks:
   - id: guideline-check
     args:
