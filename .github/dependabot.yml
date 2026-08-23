@@ -1,60 +1,6 @@
 version: 2
-
 updates:
-    # ── GitHub Actions ─────────────────────────────────────────────────────────
-    -   package-ecosystem: github-actions
-        directory: /
-        schedule:
-            interval: weekly
-            day: monday
-            time: "09:00"
-            timezone: Europe/Paris
-        labels:
-            - dependencies
-            - github-actions
-        commit-message:
-            prefix: "ci"
-        groups:
-            github-actions:
-                patterns:
-                    - "*"
-                exclude-patterns:
-                    - "chrysa/github-actions*"
-                    - "chrysa/pre-commit-tools*"
-                    - "chrysa/pre-commit-hooks-changelog*"
-
-    # ── pip / Python ───────────────────────────────────────────────────────────
-    -   package-ecosystem: pip
-        directory: /
-        schedule:
-            interval: weekly
-            day: monday
-            time: "09:00"
-            timezone: Europe/Paris
-        labels:
-            - dependencies
-            - python
-        commit-message:
-            prefix: "chore"
-        groups:
-            python-deps:
-                patterns:
-                    - "*"
-
-    # ── pre-commit hooks ───────────────────────────────────────────────────────
-    -   package-ecosystem: "pre-commit"
-        directory: /
-        schedule:
-            interval: weekly
-            day: monday
-            time: "09:00"
-            timezone: Europe/Paris
-        labels:
-            - dependencies
-            - pre-commit
-        commit-message:
-            prefix: "chore"
-        ignore:
-            # Managed manually — autoupdate replaces semver tags with SHAs
-            -   dependency-name: "https://github.com/chrysa/pre-commit-tools"
-            -   dependency-name: "https://github.com/chrysa/pre-commit-hooks-changelog"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
