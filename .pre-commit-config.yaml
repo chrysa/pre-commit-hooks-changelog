@@ -23,7 +23,7 @@ repos:
       - id: requirements-sort
       - id: env-file-check
       - id: yaml-sorter
-        exclude: "(?x)^(\n  changelog/.*\\.ya?ml|\n  \\.pre-commit-hooks\\.yaml|\n  \\.pre-commit-config\\.yaml|\n  \\.github/.*\\.ya?ml\n)$"
+        exclude: "^(\\.github/|workflows/|templates/|docker-compose)|(^|/)(pnpm-lock|yarn|uv|poetry)\\.(yaml|lock)$|(^|/)\\.pre-commit-config\\.yaml$"
       - id: makefile-check
       - id: env-example-sync
       - id: adr-gate
