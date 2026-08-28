@@ -1,38 +1,47 @@
-[build-system]
-requires = ["setuptools>=83.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [tool.ruff]
 line-length = 120
-indent-width = 4
-target-version = "py313"
-extend-exclude = [".pytest_cache/*", "*.egg-info/*", ".ruff_cache/*", "docs"]
+target-version = "py39"
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/",
+    "build/",
+    "dist/",
+    ".eggs",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+]
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "ANN", "ARG", "C901", "PERF203", "PERF401", "PLR0402", "PLR0911", "PLR0912", "PLR0915", "PLR1714", "PLR1730", "PLR5501", "RUF005", "RUF006", "RUF007", "RUF009", "RUF012", "RUF013", "RUF022", "RUF043", "RUF059", "RUF100"]
-ignore = ["E501", "ANN401"]
-fixable = ["ALL"]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C90",  # mccabe complexity
+    "PL",   # pylint
+    "RUF",  # ruff-specific rules
+    "PERF203",
+    "PERF401",
+]
+ignore = [
+    "E203",   # whitespace before ':'
+    "E501",   # line too long (handled by formatter)
+    "PLR0913", # too many arguments
+]
 
+[tool.ruff.lint.mccabe]
+max-complexity = 10
 
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["ANN", "ARG", "N802", "N803"]
-"setup.py" = ["ANN"]
-"docs/*" = ["ANN", "ARG"]
+[tool.ruff.lint.isort]
+known-first-party = ["pre_commit_hooks_changelog"]
+lines-between-types = 1
 
 [tool.ruff.format]
 quote-style = "double"
+indent-style = "space"
 line-ending = "lf"
-
-[tool.ruff.lint.isort]
-force-single-line = true
-lines-after-imports = 2
-
-[tool.mypy]
-python_version = "3.14"
-strict = true
-ignore_missing_imports = true
-explicit_package_bases = true
-namespace_packages = true
-# Legacy flat-layout duplicate modules kept for back-compat; the canonical package is pre_commit_hook/.
-files = ["pre_commit_hook"]
-exclude = ["docs/", "build/"]
+skip-magic-trailing-comma = false

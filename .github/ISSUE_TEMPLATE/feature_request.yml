@@ -1,37 +1,52 @@
 name: Feature Request
-description: Suggest a new feature or improvement
+description: Suggest an improvement or a new feature
+title: "[Feature] "
 labels: ["enhancement"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for suggesting an improvement! Please fill out the sections below.
+    -   type: markdown
+        attributes:
+            value: |
+                Thank you for suggesting an improvement. Describe your need as clearly as possible.
 
-  - type: textarea
-    id: problem
-    attributes:
-      label: Problem statement
-      description: Is your feature request related to a problem? Describe it.
-      placeholder: I'm frustrated when ...
-    validations:
-      required: true
+    -   type: textarea
+        id: problem
+        attributes:
+            label: Problem or need
+            description: What problem would this feature solve?
+            placeholder: I find it frustrating that I can't...
+        validations:
+            required: true
 
-  - type: textarea
-    id: solution
-    attributes:
-      label: Proposed solution
-      description: A clear and concise description of what you'd like to happen.
-    validations:
-      required: true
+    -   type: textarea
+        id: solution
+        attributes:
+            label: Proposed solution
+            description: Describe the solution you have in mind.
+        validations:
+            required: true
 
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives considered
-      description: Any alternative solutions or features you've considered.
+    -   type: textarea
+        id: alternatives
+        attributes:
+            label: Alternatives considered
+            description: Have you considered other approaches?
+        validations:
+            required: false
 
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Any other context, mockups, or examples.
+    -   type: textarea
+        id: usecase
+        attributes:
+            label: Use case
+            description: Describe the concrete use case.
+            placeholder: |
+                In a project with multiple teams, it would be useful to...
+        validations:
+            required: false
+
+    -   type: textarea
+        id: context
+        attributes:
+            label: Additional context
+            description: Any other element (screenshots, links, references).
+        validations:
+            required: false

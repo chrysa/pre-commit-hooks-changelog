@@ -21,21 +21,26 @@ permissions:
     pull-requests: write
     statuses: write
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
 jobs:
     # ── Versioning ─────────────────────────────────────────────────────────────
     versioning:
         name: GitVersion
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         outputs:
             semver: ${{ steps.gv.outputs.semVer }}
             full-semver: ${{ steps.gv.outputs.fullSemVer }}
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
                 with:
                     fetch-depth: 0
 
             -   id: gv
-                uses: chrysa/github-actions/gitversion@v1.0.1
+                uses: chrysa/github-actions/gitversion@v1.8.1
 
             -   name: Display version
                 run: |
@@ -47,20 +52,21 @@ jobs:
     tests:
         name: Tests (Python ${{ matrix.python-version }})
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         needs: versioning
         strategy:
             fail-fast: false
             matrix:
                 python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.0.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.1
                 with:
                     python-version: ${{ matrix.python-version }}
                     extras: tests
 
-            -   uses: chrysa/github-actions/run-tests@v1.0.1
+            -   uses: chrysa/github-actions/run-tests@v1.8.1
                 with:
                     python-version: ${{ matrix.python-version }}
                     latest-python: "3.14"
@@ -70,23 +76,24 @@ jobs:
     lint:
         name: Lint
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         needs: versioning
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.0.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.1
                 with:
                     python-version: "3.13"
                     extras: ruff,mypy
 
-            -   uses: chrysa/github-actions/ruff-check@v1.0.1
+            -   uses: chrysa/github-actions/ruff-check@v1.8.1
                 with:
                     python-version: "3.13"
                     latest-python: "3.13"
                     config: pyproject.toml
                     sources: pre_commit_hook
 
-            -   uses: chrysa/github-actions/mypy-check@v1.0.1
+            -   uses: chrysa/github-actions/mypy-check@v1.8.1
                 with:
                     python-version: "3.13"
                     latest-python: "3.13"
@@ -97,15 +104,16 @@ jobs:
     pre-commit:
         name: Pre-commit
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         needs: versioning
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
 
-            -   uses: actions/setup-python@v6
+            -   uses: actions/setup-python@v7.0.0
                 with:
                     python-version: "3.13"
 
-            -   uses: pre-commit/action@v3.0.1
+            -   uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
                 env:
                     SKIP: generate-changelog,env-file-check,requirements-sort
 
@@ -114,12 +122,13 @@ jobs:
         name: SonarCloud analysis
         needs: [lint, tests]
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
                 with:
                     fetch-depth: 0
 
-            -   uses: chrysa/github-actions/sonar-scan@v1.0.1
+            -   uses: chrysa/github-actions/sonar-scan@v1.8.1
                 with:
                     latest-python: "3.14"
                     sonar-token: ${{ secrets.SONAR_TOKEN }}
@@ -135,11 +144,12 @@ jobs:
         name: Deploy to TestPyPI
         needs: [versioning, tests, lint]
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.0.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.1
                 with:
                     python-version: "3.13"
                     extras: pypi
@@ -165,11 +175,12 @@ jobs:
         name: Deploy to PyPI
         needs: [versioning, tests, lint]
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         steps:
-            -   uses: actions/checkout@v6
+            -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.0.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.1
                 with:
                     python-version: "3.13"
                     extras: pypi
@@ -191,7 +202,7 @@ jobs:
                     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
 
             -   name: Create GitHub Release
-                uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+                uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
                 with:
                     tag_name: v${{ needs.versioning.outputs.semver }}
                     name: v${{ needs.versioning.outputs.semver }}

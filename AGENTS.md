@@ -1,44 +1,31 @@
 # AGENTS.md — pre-commit-hooks-changelog
 
-Guidance for AI coding agents working in this repository. See `CLAUDE.md` for the
-full project brief; this file is the agent-facing quick reference.
+Guidance for AI coding agents working in this repository. Human contributors: see `CLAUDE.md`
+and `CONTRIBUTING.md`.
 
-## What this is
+## Conventions
 
-A YAML-driven Django app scaffolder. The `forgeapps` management command reads a
-spec document and generates Django apps with a custom structure — a generic,
-declarative replacement for per-project Python scaffolding scripts.
+- Language: English for all code, comments, docs, and config.
+- Commits: Conventional Commits (`feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`).
+- Branches: `feature/`, `bugfix/`, `chore/`, `hotfix/`, `release/`; default branch `develop`.
+- One PR per issue, scoped tight; every PR references an issue (`Closes/Fixes/Refs #N`).
+- Squash merge only; never force-push shared branches.
 
-## Architecture rules (do not break)
+## Standards
 
-- The core (`naming.py`, `render.py`, `spec.py`, `generator.py`) MUST stay
-  import-free of Django. Only `apps.py` and `management/commands/forgeapps.py`
-  touch Django.
-- `plan()` is pure (no side effects); `apply(dry_run=True)` reports actions but
-  writes nothing — keep `--dry-run` exact.
-- Existing files are SKIP by default; `--force` overwrites. Never clobber by default.
+This repo follows the chrysa transverse standards inlined in `CLAUDE.md`
+(managed `chrysa:standards` block). Key gates: test coverage >= 85%, 0 lint warnings, mypy clean,
+SonarCloud rating A. Max function 50 lines, max file 500 lines.
 
-## Always do
+## Before you commit
 
-- Run tests, lint, type-check, and build through **Docker or pre-commit only** —
-  never on the host. Use `make docker-test`, `make lint`, `make typecheck`,
-  `make test-cov`.
-- Keep code, comments, docs, commits, and PRs in **English**.
-- Conventional commits (feat/fix/chore/docs/refactor/test/build/ci) — the changelog
-  and version bump are derived from them (`cliff.toml`, `GitVersion.yml`).
-- mypy strict (django-stubs), ruff line length 120, coverage `fail_under = 85`.
+- Run `make lint` and `make test`; both must pass.
+- Keep changes minimal and scoped to the referenced issue.
+- Never commit secrets or a real `.env` (use `.env.example`).
+- Regenerate the changelog only via `make changelog` (git-cliff), never by hand.
 
-## Never do
+## Safe editing
 
-- Never add a Django import to the core modules.
-- Never run `pytest` / `ruff` / `mypy` directly on the host.
-- Never overwrite generated files without `--force` semantics in the generator.
-
-## Resources
-
-| Task | Where |
-|------|-------|
-| Project brief & layout | `CLAUDE.md` |
-| Reference spec document | `apps.example.yaml` |
-| Commands | `Makefile` (`make help`) |
-| Standards backlog | issue #31 |
+- Read `CLAUDE.md` and any `primer.md` at session start for current state and conventions.
+- Prefer small, reviewable diffs over large rewrites.
+- When unsure about blast radius, inspect callers before editing shared symbols.
