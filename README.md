@@ -1,4 +1,19 @@
-# pre-commit-hooks-changelog
+# badges
+
+|    GENERAL    |
+|---|---|---|---|
+|[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/chrysa/pre-commit-hooks-changelog/graphs/commit-activity)|[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)|[![made-with-sphinx-doc](https://img.shields.io/badge/Made%20with-Sphinx-1f425f.svg)](https://www.sphinx-doc.org/)|[![made-with-Markdown](https://img.shields.io/badge/Made%20with-Markdown-1f425f.svg)](http://commonmark.org)|
+|[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/chrysa/pre-commit-hooks-changelog/releases/)|[![PyPI download day](https://img.shields.io/pypi/dd/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|[![PyPI status](https://img.shields.io/pypi/status/ansicolortags.svg)](https://pypi.org/project/pre-commit-hooks-changelog/)|
+
+|     CI STATUS    |
+|------------------|
+| master | develop |
+|:------:|:-------:|
+| ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=master) | ![.github/workflows/pythonpackage.yml](https://github.com/chrysa/pre-commit-hooks-changelog/workflows/.github/workflows/pythonpackage.yml/badge.svg?branch=develop) |
+
+[Changelog](changelog.md)
+
+## pre-commit-hooks-changelog
 
 [![CI](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml/badge.svg?branch=master)](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=chrysa_pre-commit-hooks-changelog&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=chrysa_pre-commit-hooks-changelog)
