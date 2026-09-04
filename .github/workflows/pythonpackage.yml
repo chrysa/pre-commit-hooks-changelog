@@ -40,7 +40,7 @@ jobs:
                     fetch-depth: 0
 
             -   id: gv
-                uses: chrysa/github-actions/gitversion@v1.8.1
+                uses: chrysa/github-actions/gitversion@v1.8.2
 
             -   name: Display version
                 run: |
@@ -61,12 +61,12 @@ jobs:
         steps:
             -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.8.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.2
                 with:
                     python-version: ${{ matrix.python-version }}
                     extras: tests
 
-            -   uses: chrysa/github-actions/run-tests@v1.8.1
+            -   uses: chrysa/github-actions/run-tests@v1.8.2
                 with:
                     python-version: ${{ matrix.python-version }}
                     latest-python: "3.14"
@@ -81,19 +81,19 @@ jobs:
         steps:
             -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.8.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.2
                 with:
                     python-version: "3.13"
                     extras: ruff,mypy
 
-            -   uses: chrysa/github-actions/ruff-check@v1.8.1
+            -   uses: chrysa/github-actions/ruff-check@v1.8.2
                 with:
                     python-version: "3.13"
                     latest-python: "3.13"
                     config: pyproject.toml
                     sources: pre_commit_hook
 
-            -   uses: chrysa/github-actions/mypy-check@v1.8.1
+            -   uses: chrysa/github-actions/mypy-check@v1.8.2
                 with:
                     python-version: "3.13"
                     latest-python: "3.13"
@@ -128,7 +128,7 @@ jobs:
                 with:
                     fetch-depth: 0
 
-            -   uses: chrysa/github-actions/sonar-scan@v1.8.1
+            -   uses: chrysa/github-actions/sonar-scan@v1.8.2
                 with:
                     latest-python: "3.14"
                     sonar-token: ${{ secrets.SONAR_TOKEN }}
@@ -149,7 +149,7 @@ jobs:
         steps:
             -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.8.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.2
                 with:
                     python-version: "3.13"
                     extras: pypi
@@ -180,7 +180,7 @@ jobs:
         steps:
             -   uses: actions/checkout@v7
 
-            -   uses: chrysa/github-actions/tool-setup@v1.8.1
+            -   uses: chrysa/github-actions/tool-setup@v1.8.2
                 with:
                     python-version: "3.13"
                     extras: pypi
