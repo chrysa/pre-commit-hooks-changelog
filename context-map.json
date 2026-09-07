@@ -1,0 +1,24 @@
+{
+  "adrs": [],
+  "contracts": [
+    "standards"
+  ],
+  "ddd_level": "(not available)",
+  "dependencies": {},
+  "depends_on_shared_standards": true,
+  "description": "[![CI](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml/badge.svg?branch=master)](https://github.com/chrysa/pre-commit-hooks-changelog/actions/workflows/pythonpackage.yml)",
+  "entry_points": [],
+  "key_directories": [
+    ".claude",
+    ".github",
+    "changelog",
+    "docs",
+    "pre_commit_hook",
+    "scripts",
+    "standards",
+    "tests"
+  ],
+  "name": "pre-commit-hooks-changelog",
+  "profiles": [],
+  "schema": "chrysa.context-map/1"
+}
