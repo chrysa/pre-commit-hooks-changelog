@@ -1,4 +1,5 @@
 #!make
+# makefile-tier: lib
 ifneq (,$(findstring n,$(firstword -$(MAKEFLAGS))))
     DRY_RUN := 1
 endif
@@ -33,7 +34,8 @@ SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
 .PHONY: benchmark build clean compile coverage coverage-html-report \
 	deploy deploy-test documentation down ruff ruff-format generate-changelog \
 	help install mypy pre-commit pypi pypi-test quality \
-	tests tests-debug tests-fail-fast tests-func-cov tests-reports tests-10-slower
+	dev lint format typecheck test test-cov \
+	tests-debug tests-fail-fast tests-func-cov tests-reports tests-10-slower
 
 # ─── Help ─────────────────────────────────────────────────────────────────────
 
@@ -64,12 +66,14 @@ compile: build ## Compile Python package (bdist)
 install: ## Install development dependencies
 	@pip install -e ".[tests,ruff,mypy,pre_commit]"
 
+dev: install ## Alias for install (dev environment setup)
+
 down: ## Stop and remove Docker containers
 	@docker compose down
 
 # ─── Tests ────────────────────────────────────────────────────────────────────
 
-tests: ## Run unit tests
+test: ## Run unit tests
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_ONLY)"
 
 tests-fail-fast: ## Tests — stop at first failure
@@ -96,6 +100,8 @@ benchmark: ## Profile unit tests (benchmark)
 coverage: ## Run code coverage
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV)"
 
+test-cov: coverage ## Alias for coverage (run tests with coverage)
+
 coverage-html-report: ## Generate HTML coverage report
 	@mkdir -p reports
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_COV_HTML)"
@@ -105,13 +111,20 @@ coverage-html-report: ## Generate HTML coverage report
 ruff: ## Run ruff linter (lint + import sort + style)
 	@docker compose run --rm quality bash -c "$(RUFF_CMD)"
 
+lint: ruff ## Alias for ruff (canonical lint target)
+
 ruff-format: ## Check ruff formatting
 	@docker compose run --rm quality bash -c "$(RUFF_FMT_CMD)"
+
+format: ## Auto-format code with ruff (in-container)
+	@docker compose run --rm quality bash -c "ruff format ./pre_commit_hook && ruff check --fix ./pre_commit_hook"
 
 mypy: ## Run mypy type check
 	@docker compose run --rm quality bash -c "$(MYPY_CMD)"
 
-quality: ruff ruff-format mypy tests ## Run all linters + tests
+typecheck: mypy ## Alias for mypy (canonical typecheck target)
+
+quality: ruff ruff-format mypy test ## Run all linters + tests
 
 # ─── Documentation ────────────────────────────────────────────────────────────
 
