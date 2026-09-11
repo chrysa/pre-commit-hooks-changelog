@@ -97,7 +97,6 @@ pre-commit-hooks-changelog — technical digest
     action-check.yml
     approved-label.yml
     auto-assign.yml
-    auto-update-pre-commit.yml
     ci.yml
     dependabot-auto-merge.yml
     detect-conflicts.yml
@@ -105,6 +104,7 @@ pre-commit-hooks-changelog — technical digest
     pr-dependencies.yml
     pull-request-size.yml
     pythonpackage.yml
+    release.yml
     sync-labels.yml
     update-pr-body.yml
 .gitignore
@@ -152,6 +152,7 @@ pre_commit_hook/
   helper.py
 pyproject.toml
 scripts/
+  gen_context_files.py
   quality_gate.py
 setup.cfg
 setup.py
@@ -206,6 +207,7 @@ pre_commit_hook/__init__.py
 pre_commit_hook/formatter.py
 pre_commit_hook/generate_changelog.py
 pre_commit_hook/helper.py
+scripts/gen_context_files.py — Generate the standardised per-repo context files from the repo's own content.
 scripts/quality_gate.py
 setup.py
 tests/__init__.py
