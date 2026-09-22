@@ -112,3 +112,10 @@ venv.bak/
 
 # test temp files
 tests/tmp/
+# Claude Code (personal/generated — shared config is tracked)
+.claude/.active-feature
+.claude/settings.local.json
+.claude/sessions/
+.claude/state/
+.claude/worktrees/
+.claude/hooks/*-state.json
