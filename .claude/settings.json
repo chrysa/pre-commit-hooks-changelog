@@ -9,6 +9,12 @@
             "name": "check-no-env-files",
             "timeout": 5000,
             "type": "command"
+          },
+          {
+            "command": "sh -c 'f=\"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-commit-self-test.cjs\"; [ ! -f \"$f\" ] || node \"$f\"'",
+            "name": "pre-commit-self-test",
+            "timeout": 65000,
+            "type": "command"
           }
         ]
       }
