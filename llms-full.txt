@@ -113,6 +113,7 @@ pre-commit-hooks-changelog — technical digest
 .pre-commit-config.yaml
 .pre-commit-hooks.yaml
 AGENTS.md
+ARCHITECTURE.md
 CHANGELOG.md
 CLAUDE.md
 CODEOWNERS
@@ -162,6 +163,7 @@ standards/
     README.md
     accessibility.md
     agents.md
+    ai-orchestration.md
     api.md
     architecture.md
     backend-python.md
