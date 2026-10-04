@@ -67,6 +67,8 @@ pre-commit-hooks-changelog — technical digest
       SKILL.md
     plan/
       SKILL.md
+    rollout-status/
+      SKILL.md
     spec/
       SKILL.md
     standards-authoring/
@@ -78,6 +80,7 @@ pre-commit-hooks-changelog — technical digest
     verification-loop/
       SKILL.md
 .editorconfig
+.env.example
 .gitattributes
 .github/
   CODEOWNERS
