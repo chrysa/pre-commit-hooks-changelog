@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # CLAUDE.md — [PROJECT_NAME]
 
 > Replace [PROJECT_NAME] and all [PLACEHOLDER] values before committing.
@@ -80,17 +82,7 @@ Shared skills from `shared-standards/.claude/skills/`:
 
 ## graphify
 
-For any question about this repo's architecture, structure, components, or how to add/modify/find
-code, your **first tool call must be** to read `graphify-out/GRAPH_REPORT.md` (if it exists).
-
-Triggers: "how do I…", "where is…", "what does … do", "add/modify a <component>",
-"explain the architecture", or anything that depends on how files or classes relate.
-
-After reading the report (and `graphify-out/wiki/index.md` for deep questions), answer from the
-graph. Only read source files when (a) modifying/debugging specific code, (b) the graph lacks
-the needed detail, or (c) the graph is missing or stale.
-
-Type `/graphify` in Copilot Chat to build or update the graph.
+Follow the /graphify skill.
 
 <!-- chrysa:standards:start · managed by distribute-standards.sh · DO NOT EDIT -->
 # chrysa — Transverse Standards (core)
@@ -159,8 +151,6 @@ Type `/graphify` in Copilot Chat to build or update the graph.
 - Agent actions are governed
 - An AI feature is evaluated, not just shipped
 - An agent writes only where the owner owns
-- A retryable operation proves the retry has no external effects
-- A mass-mutation batch returns the explicit list of what it changed
 
 ### Security, identity & sessions · `standards/rules/security.md`
 - Per-person data implies a user account — no exceptions dressed up as simplicity
@@ -184,14 +174,6 @@ Type `/graphify` in Copilot Chat to build or update the graph.
 - A cache is a correctness contract, not a sprinkle of speed
 - Quality gates
 - Error handling pattern (all automations)
-
-### Product surfaces · `standards/rules/product.md`
-- A public web surface is legally compliant, consent-respecting, and operable — before it ships
-- Setup wizard & config panel
-- A game is DRM-free and fully playable solo offline
-- Every product that is operated ships a management backoffice
-- If a user can supply a file, the product accepts an upload
-- A floating assistant where it earns its place — never as decoration
 
 ### Backend Python · `standards/rules/backend-python.md`
 - Python packaging — `pyproject.toml` is the single source of truth
@@ -222,6 +204,13 @@ Type `/graphify` in Copilot Chat to build or update the graph.
 - `.dockerignore` mandatory & exhaustive
 - Container-runtime policy
 
+### Product surfaces · `standards/rules/product.md`
+- Setup wizard & config panel
+- A game is DRM-free and fully playable solo offline
+- Every product that is operated ships a management backoffice
+- If a user can supply a file, the product accepts an upload
+- A floating assistant where it earns its place — never as decoration
+
 ### Design system · `standards/rules/design.md`
 - Design system
 
@@ -233,7 +222,4 @@ Type `/graphify` in Copilot Chat to build or update the graph.
 - Release & changelog config (canonical)
 - GitHub Actions (reuse first · custom actions centralised · thin workflows)
 - Pre-commit & git hooks (native, via pre-commit.com — never wrapped in make)
-
-### Local AI orchestration & local-first · `standards/rules/ai-orchestration.md`
-- AI orchestration & local-first
 <!-- chrysa:standards:end -->

@@ -1,7 +1,26 @@
-<!-- chrysa:standards-copilot:start · generated · DO NOT EDIT -->
-## chrysa standards (generated)
+---
+name: graphify
+description: "Procedure: graphify. Use when this procedure is needed."
+---
 
-> The same rules as `CLAUDE.md`, for GitHub Copilot. Detail loads on demand from `standards/rules/<domain>.md`; the canon is `standards/STANDARDS.chrysa.md`.
+For any question about this repo's architecture, structure, components, or how to add/modify/find
+code, your **first tool call must be** to read `graphify-out/GRAPH_REPORT.md` (if it exists).
+
+Triggers: "how do I…", "where is…", "what does … do", "add/modify a <component>",
+"explain the architecture", or anything that depends on how files or classes relate.
+
+After reading the report (and `graphify-out/wiki/index.md` for deep questions), answer from the
+graph. Only read source files when (a) modifying/debugging specific code, (b) the graph lacks
+the needed detail, or (c) the graph is missing or stale.
+
+Type `/graphify` in Copilot Chat to build or update the graph.
+
+<!-- chrysa:standards:start · managed by distribute-standards.sh · DO NOT EDIT -->
+# chrysa — Transverse Standards (core)
+
+> The **slim always-on core**. The canonical, tool-agnostic source of truth is `standards/STANDARDS.chrysa.md`; the normative annexes live under `standards/annexes/`. Each rule below is a one-line pointer — its full text lives in the per-domain file named beside the heading (`standards/rules/<domain>.md`), read on demand.
+
+**Where an annexe and the canon disagree, the canon wins.**
 
 ### Governance, language & compliance · `standards/rules/governance.md`
 - Normative annexes
@@ -87,6 +106,14 @@
 - Quality gates
 - Error handling pattern (all automations)
 
+### Product surfaces · `standards/rules/product.md`
+- A public web surface is legally compliant, consent-respecting, and operable — before it ships
+- Setup wizard & config panel
+- A game is DRM-free and fully playable solo offline
+- Every product that is operated ships a management backoffice
+- If a user can supply a file, the product accepts an upload
+- A floating assistant where it earns its place — never as decoration
+
 ### Backend Python · `standards/rules/backend-python.md`
 - Python packaging — `pyproject.toml` is the single source of truth
 - Python is written object-oriented, one class per file
@@ -116,13 +143,6 @@
 - `.dockerignore` mandatory & exhaustive
 - Container-runtime policy
 
-### Product surfaces · `standards/rules/product.md`
-- Setup wizard & config panel
-- A game is DRM-free and fully playable solo offline
-- Every product that is operated ships a management backoffice
-- If a user can supply a file, the product accepts an upload
-- A floating assistant where it earns its place — never as decoration
-
 ### Design system · `standards/rules/design.md`
 - Design system
 
@@ -134,4 +154,7 @@
 - Release & changelog config (canonical)
 - GitHub Actions (reuse first · custom actions centralised · thin workflows)
 - Pre-commit & git hooks (native, via pre-commit.com — never wrapped in make)
-<!-- chrysa:standards-copilot:end -->
+
+### Local AI orchestration & local-first · `standards/rules/ai-orchestration.md`
+- AI orchestration & local-first
+<!-- chrysa:standards:end -->
