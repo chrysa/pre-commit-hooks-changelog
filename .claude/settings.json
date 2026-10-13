@@ -143,5 +143,7 @@
       "Read(**/*.min.js)",
       "Read(**/*.map)"
     ]
-  }
+  },
+  "model": "haiku",
+  "effortLevel": "low"
 }
