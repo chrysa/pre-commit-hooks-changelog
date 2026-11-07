@@ -27,6 +27,16 @@ select = [
     "RUF",  # ruff-specific rules
     "PERF203",
     "PERF401",
+    "T100",
+    "T203",
+    "LOG015",
+    "ASYNC210",
+    "ASYNC212",
+    "ASYNC220",
+    "ASYNC221",
+    "ASYNC222",
+    "ASYNC230",
+    "ASYNC251",
 ]
 ignore = [
     "E203",   # whitespace before ':'
@@ -48,6 +58,6 @@ line-ending = "lf"
 skip-magic-trailing-comma = false
 
 [tool.ruff.lint.per-file-ignores]
-"**/tests/**" = ["PLR2004"]
-"**/test_*.py" = ["PLR2004"]
-"**/conftest.py" = ["PLR2004"]
+"**/tests/**" = ["PLR2004", "T203"]
+"**/test_*.py" = ["PLR2004", "T203"]
+"**/conftest.py" = ["PLR2004", "T203"]
