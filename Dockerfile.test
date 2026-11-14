@@ -1,0 +1,29 @@
+# Test image — runs the suite with the coverage gate and writes coverage.xml at
+# the working-dir root, which the CI (.github/workflows/ci.yml) uploads as the
+# test-results-* artifact. Built and run by `make docker-test` (CI parity).
+#
+# Self-contained on purpose: the repo's main Dockerfile is service-oriented
+# (compose) and does not surface coverage.xml to the host, so the canonical CI
+# test entry point lives here instead.
+FROM python:3.14-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir --quiet --upgrade pip
+
+# Only the package metadata first, to install dependencies and the tests extra
+# (pytest, pytest-cov, pytest-mock) without the sources, then the sources.
+COPY setup.cfg setup.py pyproject.toml README.md ./
+COPY pre_commit_hook/ ./pre_commit_hook/
+RUN pip install --no-cache-dir --quiet ".[tests]"
+
+COPY tests/ ./tests/
+
+# --cov-config points at setup.cfg ([coverage:*] with fail_under=85); the XML
+# report lands at /app/coverage.xml, copied out by the CI step.
+CMD ["pytest", "tests/", \
+     "--cov=pre_commit_hook", "--cov-branch", "--cov-config=setup.cfg", \
+     "--cov-report=xml:coverage.xml", "--cov-report=term-missing"]

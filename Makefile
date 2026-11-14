@@ -34,7 +34,7 @@ SPHINX_CMD := sphinx-apidoc --follow-links --separate --module-first \
 .PHONY: benchmark build clean compile coverage coverage-html-report \
 	deploy deploy-test documentation down ruff ruff-format generate-changelog \
 	help install mypy pre-commit pypi pypi-test quality \
-	dev lint format typecheck test test-cov \
+	dev lint format typecheck test test-cov docker-test \
 	tests-debug tests-fail-fast tests-func-cov tests-reports tests-10-slower
 
 # ─── Help ─────────────────────────────────────────────────────────────────────
@@ -72,6 +72,12 @@ down: ## Stop and remove Docker containers
 	@docker compose down
 
 # ─── Tests ────────────────────────────────────────────────────────────────────
+
+docker-test: ## CI entry point — run the suite in Dockerfile.test, write coverage.xml at repo root
+	@docker build -f Dockerfile.test -t pre-commit-hooks-changelog-test:ci .
+	@docker run --rm -v "$(CURDIR)":/out pre-commit-hooks-changelog-test:ci \
+		sh -c "pytest tests/ --cov=pre_commit_hook --cov-branch --cov-config=setup.cfg \
+		--cov-report=xml:/out/coverage.xml --cov-report=term-missing"
 
 test: ## Run unit tests
 	@docker compose run --rm pytest bash -c "$(PYTEST) $(PYTEST_OPTS_ONLY)"
